@@ -21,8 +21,7 @@ pygame.display.set_caption('Project nont')
 
 # set icon
 pygame.display.set_icon(
-pygame.image.load(os.path.join('assets', '32x32_project_nont.png'))
-)
+pygame.image.load(os.path.join('assets', '32x32_project_nont.png')))
 
 # Disable Mouse
 pygame.mouse.set_visible(False)
@@ -122,17 +121,17 @@ while True:
     temp = (((((mouse_pos[0]-pos[0])**2)+((mouse_pos[1]-pos[1])**2))**0.5)/10)
 
     # temp ZeroDivision error
-    if temp == 0:
-        temp = 0.1
+    if temp != 0:
 
-    # Fire
-    if fire and cooldown < 100 and cooldown%4 == 0:
 
-        bullets.append(
-        [*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp]
-        )
+        # Fire
+        if fire and cooldown < 100 and cooldown%4 == 0:
 
-        cooldown +=10
+            bullets.append(
+            [*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp]
+            )
+
+            cooldown +=10
 
     # end temp
     del temp
