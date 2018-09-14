@@ -52,8 +52,8 @@ class Enemy:
     def renew():
         for e in Enemy.objects:
             for i in bullets:
-                if e.x < i[0] < (e.x + Enemy.width) and e.y < i[0] < (e.y + Enemy.width):
-                    Enemy.remove(e)
+                if e.x < i[0] < (e.x + Enemy.width) and e.y < i[1] < (e.y + Enemy.width):
+                    Enemy.objects.remove(e)
                     smart_spawn()
 
 def smart_spawn():
