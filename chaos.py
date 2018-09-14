@@ -78,9 +78,18 @@ class Bullet:
 
 class Player:
     objects = []
+    width = 0
+    height = 0
 
     def __init__(self):
-        self.x = int(1)
+        self.x = 400
+        self.y = 400
+        Player.objects.append(self)
+
+    def display():
+        for i in Player.objects:
+            pygame.draw.rect(display, black, (i.x, i.y, Player.width, Player.height))
+
 
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
@@ -183,7 +192,6 @@ def game():
 
         # temp ZeroDivision error
         if temp != 0:
-
 
             # Fire
             if fire and cooldown < 100 and cooldown%4 == 0:
