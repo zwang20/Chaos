@@ -58,6 +58,15 @@ class Enemy:
                     Enemy.objects.remove(e)
                     smart_spawn()
 
+class Bullet:
+    objects = []
+
+    def __init__(self, x, y, vector_x, vector_y):
+        self.x = x
+        self.y = y
+        self.vector_x = vector_x
+        self.vector_y = vector_y
+
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(display_width - Enemy.width - 1))
 
