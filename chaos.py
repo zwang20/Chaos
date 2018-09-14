@@ -166,15 +166,7 @@ def game():
             sge_print(display, 'Paused')
             sge_print(display, 'To unpause press x', 1, 30)
             keys = pygame.key.get_pressed()
-            for event in pygame.event.get():  # Input
-                if event.type == pygame.QUIT: # Quit
-                    pygame.display.quit()
-                    pygame.quit()
-                    quit()
-            if keys[pygame.K_q]:
-                pygame.display.quit()
-                pygame.quit()
-                quit()
+            get_input()
             if keys[pygame.K_x]:
                 pause = False
             pygame.display.update() # update
