@@ -15,7 +15,9 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 
 # creat windows
-display = pygame.display.set_mode([800, 800])
+display_width = 800
+display_height = 800
+display = pygame.display.set_mode([display_width, display_height])
 
 # set caption
 pygame.display.set_caption('Project nont')
@@ -57,7 +59,7 @@ class Enemy:
                     smart_spawn()
 
 def smart_spawn():
-    Enemy(random.randint(1, 800), random.randint(1, 800))
+    Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(display_width - Enemy.width - 1))
 
 # Main loop
 smart_spawn()
