@@ -1,6 +1,7 @@
 import pygame
 import os
 from sge import *
+import random
 
 # init pygame
 pygame.init()
@@ -14,14 +15,13 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 
 # creat windows
-game_display = pygame.display.set_mode([800, 800])
+display = pygame.display.set_mode([800, 800])
 
 # set caption
 pygame.display.set_caption('Project nont')
 
 # set icon
-pygame.display.set_icon(
-pygame.image.load(os.path.join('assets', '32x32_project_nont.png')))
+pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_nont.png')))
 
 # Disable Mouse
 pygame.mouse.set_visible(False)
@@ -35,14 +35,43 @@ cooldown = 0
 # position
 pos = [400, 400]
 
+class Enemy:
+    objects = []
+    width = 10
+    height = 10
+
+    def __init__(self, x, y):
+        Enemy.objects.append(self)
+        self.x = x
+        self.y = y
+
+    def display():
+        for i in Enemy.objects:
+            pygame.draw.rect(display, black, (i.x, i.y, Enemy.width, Enemy.height))
+
+    def renew():
+        for e in Enemy.objects:
+            for i in bullets:
+                if e.x < i[0] < (e.x + Enemy.width) and e.y < i[0] < (e.y + Enemy.width):
+                    Enemy.remove(e)
+                    smart_spawn()
+
+def smart_spawn():
+    Enemy(random.randint(1, 800), random.randint(1, 800))
+
 # Main loop
+smart_spawn()
 while True:
 
     # init
-    clock.tick(30) # Frames per second
-    sge_clear(game_display) # Clear
-    sge_print(game_display, str(int(10*clock.get_fps())/10)) # Fps display
+    clock.tick(10) # Frames per second
+    sge_clear(display) # Clear
+    sge_print(display, str(int(10*clock.get_fps())/10)) # Fps display
 
+    Enemy.display()
+    Enemy.renew()
+
+    print([i[1:2] for i in bullets])
     # fire
     fire = False
 
@@ -87,10 +116,10 @@ while True:
 
     # Pause
     while pause:
-        clock.tick(30)
-        sge_clear(game_display)
-        sge_print(game_display, 'Paused')
-        sge_print(game_display, 'To unpause press x', 1, 30)
+        clock.tick(10)
+        sge_clear(display)
+        sge_print(display, 'Paused')
+        sge_print(display, 'To unpause press x', 1, 30)
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():  # Input
             if event.type == pygame.QUIT: # Quit
@@ -111,11 +140,11 @@ while True:
         fire = True
 
     # mouse
-    sge_rect(game_display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, red)
-    sge_rect(game_display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, red)
+    sge_rect(display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, red)
+    sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, red)
 
     # player
-    sge_rect(game_display, *pos, 10, 10)
+    sge_rect(display, *pos, 10, 10)
     # start temp
     # temp ratios
     temp = (((((mouse_pos[0]-pos[0])**2)+((mouse_pos[1]-pos[1])**2))**0.5)/10)
@@ -127,9 +156,7 @@ while True:
         # Fire
         if fire and cooldown < 100 and cooldown%4 == 0:
 
-            bullets.append(
-            [*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp]
-            )
+            bullets.append([*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp])
 
             cooldown +=10
 
@@ -141,31 +168,22 @@ while True:
         cooldown -= 1
 
     # Cooldown bar
-    sge_rect(game_display, 700, 790, 100, 10, white)
-    sge_rect(game_display, 700, 790, cooldown, 10, red)
+    sge_rect(display, 700, 790, 100, 10, white)
+    sge_rect(display, 700, 790, cooldown, 10, red)
 
     # Bullets movement
     # start bullets_temp
     bullets_temp = []
     for bullet in bullets:
+        if 0 < bullet[0] < 800 and 0 < bullet[1] < 800:
+            # move
+            bullets_temp.append([bullet[0]+bullet[2], bullet[1]+bullet[3], bullet[2], bullet[3]])
 
-        # move
-        bullets_temp.append(
-        [bullet[0]+bullet[2], bullet[1]+bullet[3], bullet[2], bullet[3]]
-        )
-
-        # display bullets
-        sge_line(
-        game_display, black, (bullet[0], bullet[1]),
-        (bullet[0]-bullet[2], bullet[1]-bullet[3]), 2
-        )
+            # display bullets
+            sge_line(display, black, (bullet[0], bullet[1]),(bullet[0]-bullet[2], bullet[1]-bullet[3]), 2)
 
     bullets = bullets_temp
     del bullets_temp
-
-    # del extra bullets
-    if len(bullets) > 100:
-        del bullets[0]
 
 
     pygame.display.update() # update
