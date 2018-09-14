@@ -69,7 +69,13 @@ class Bullet:
 
     def display():
         for i in Bullet.objects:
-            pygame.draw.line(display, black, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y))
+            pygame.draw.line(display, red, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y))
+
+    def renew():
+        for i in Bullet.objects:
+            if 0 < i.x < display_width and 0 < i.y < display_height:
+                i.x += i.vector_x
+                i.y += i.vector_y
 
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(display_width - Enemy.width - 1))
