@@ -87,8 +87,6 @@ def smart_spawn():
 
 def game():
 
-    global bullets
-
     # Init cooldown
     cooldown = 0
 
@@ -190,7 +188,6 @@ def game():
             # Fire
             if fire and cooldown < 100 and cooldown%4 == 0:
 
-                # bullets.append([*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp])
                 Bullet(*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp)
                 cooldown +=10
 
@@ -204,21 +201,6 @@ def game():
         # Cooldown bar
         sge_rect(display, 700, 790, 100, 10, white)
         sge_rect(display, 700, 790, cooldown, 10, red)
-
-        # Bullets movement
-        # start bullets_temp
-        bullets_temp = []
-        for bullet in bullets:
-            if 0 < bullet[0] < 800 and 0 < bullet[1] < 800:
-                # move
-                bullets_temp.append([bullet[0]+bullet[2], bullet[1]+bullet[3], bullet[2], bullet[3]])
-
-                # display bullets
-                # sge_line(display, black, (bullet[0], bullet[1]),(bullet[0]-bullet[2], bullet[1]-bullet[3]), 2)
-
-        bullets = bullets_temp
-        del bullets_temp
-
 
         pygame.display.update() # update
         # This should be the last thing in the loop
