@@ -67,6 +67,10 @@ class Bullet:
         self.vector_x = vector_x
         self.vector_y = vector_y
 
+    def display():
+        for i in Bullet.objects:
+            pygame.draw.line(display, black, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y))
+
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(display_width - Enemy.width - 1))
 
