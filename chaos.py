@@ -31,9 +31,6 @@ pygame.mouse.set_visible(False)
 # create bullets list
 bullets = [] # x, y, vector x, vextor y
 
-# Init cooldown
-cooldown = 0
-
 # position
 pos = [400, 400]
 
@@ -84,9 +81,15 @@ class Player:
         self.x = int(1)
 
 def smart_spawn():
-    Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(display_width - Enemy.width - 1))
+    Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
 
 def game():
+
+    global bullets
+
+    # Init cooldown
+    cooldown = 0
+
     # Main loop
     smart_spawn()
     while True:
