@@ -90,9 +90,17 @@ class Player:
         for i in Player.objects:
             pygame.draw.rect(display, black, (i.x, i.y, Player.width, Player.height))
 
+    def move():
+        pass
+
 
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
+
+def get_input():
+    if pygame.event.peek(pygame.QUIT) or pygame.key.get_pressed()[pygame.K_q]:
+        pygame.quit()
+        quit()
 
 def game():
 
@@ -124,11 +132,7 @@ def game():
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
 
-        for event in pygame.event.get():  # Input
-            if event.type == pygame.QUIT: # Quit
-                pygame.display.quit()
-                pygame.quit()
-                quit()
+        get_input()
 
         if keys[pygame.K_q]:  # Quit
             pygame.display.quit()
