@@ -101,8 +101,8 @@ def game():
 
         Enemy.display()
         Enemy.renew()
+        Bullet.renew()
 
-        print([i[1:2] for i in bullets])
         # fire
         fire = False
 
