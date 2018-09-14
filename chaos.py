@@ -77,6 +77,12 @@ class Bullet:
                 i.x += i.vector_x
                 i.y += i.vector_y
 
+class Player:
+    objects = []
+
+    def __init__(self):
+        self.x = int(1)
+
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(display_width - Enemy.width - 1))
 
