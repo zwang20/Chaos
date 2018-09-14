@@ -64,7 +64,7 @@ smart_spawn()
 while True:
 
     # init
-    clock.tick(10) # Frames per second
+    clock.tick(30) # Frames per second
     sge_clear(display) # Clear
     sge_print(display, str(int(10*clock.get_fps())/10)) # Fps display
 
