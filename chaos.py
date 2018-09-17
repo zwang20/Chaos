@@ -28,9 +28,6 @@ pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_
 # Disable Mouse
 pygame.mouse.set_visible(False)
 
-# create bullets list
-bullets = [] # x, y, vector x, vextor y
-
 # position
 pos = [400, 400]
 
