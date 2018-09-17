@@ -75,8 +75,8 @@ class Bullet:
 
 class Player:
     objects = []
-    width = 0
-    height = 0
+    width = 10
+    height = 10
 
     def __init__(self):
         self.x = 400
@@ -87,8 +87,12 @@ class Player:
         for i in Player.objects:
             pygame.draw.rect(display, black, (i.x, i.y, Player.width, Player.height))
 
-    def move():
-        pass
+    def move(self, x, y):
+        self.x += x
+        self.y += y
+
+class Block:
+    pass
 
 
 def smart_spawn():
