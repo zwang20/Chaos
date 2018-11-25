@@ -61,7 +61,7 @@ class Bullet:
 
     def renew():
         for i in Bullet.objects:
-            if 0 < i.x < display_width and 0 < i.y < display_height:
+            if 0 <= i.x <= display_width and 0 <= i.y <= display_height:
                 i.x += i.vector_x
                 i.y += i.vector_y
 
