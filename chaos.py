@@ -115,6 +115,7 @@ def collision_detection():
                 Enemy.objects.remove(e)
                 Bullet.objects.remove(i)
                 smart_spawn()
+    for i in Bullet.objects:
         for b in Block.objects:
             if b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length):
                 Bullet.objects.remove(i)
@@ -141,7 +142,8 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    Block(0, 0, 800, 780)
+    Block(100, 100, 600, 200)
+    Block(500, 100, 600, 200)
     # Main loop
     smart_spawn()
     while True:
