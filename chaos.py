@@ -115,10 +115,12 @@ def collision_detection():
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
 
+
 def get_input():
     if pygame.event.peek(pygame.QUIT) or pygame.key.get_pressed()[pygame.K_q]:
         pygame.quit()
         quit()
+
 
 def game():
 
