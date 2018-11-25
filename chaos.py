@@ -30,9 +30,6 @@ pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_
 # Disable Mouse
 pygame.mouse.set_visible(False)
 
-# position
-pos = [400, 400]
-
 class Enemy:
     objects = []
     width = 10
@@ -68,23 +65,25 @@ class Bullet:
                 i.x += i.vector_x
                 i.y += i.vector_y
 
+
 class Player:
     objects = []
     width = 10
     height = 10
 
-    def __init__(self):
-        self.x = 400
-        self.y = 400
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
         Player.objects.append(self)
 
-    def display():
+    def display(self):
         for i in Player.objects:
             pygame.draw.rect(display, blue, (i.x, i.y, Player.width, Player.height))
 
     def move(self, x, y):
         self.x += x
         self.y += y
+
 
 class Block:
     objects = []
@@ -99,6 +98,7 @@ class Block:
     def display():
         for i in Block.objects:
             pygame.draw.rect(display, black, (i.x, i.y, i.width, i.length))
+
 
 def collision_detection():
     for i in Bullet.objects:
@@ -122,6 +122,8 @@ def get_input():
 
 def game():
 
+    player = Player(400, 400)
+
     # Init cooldown
     cooldown = 0
     Block(200, 200, 100, 100)
@@ -139,6 +141,7 @@ def game():
         Bullet.renew()
         Bullet.display()
         Block.display()
+        player.display()
 
         # fire
         fire = False
@@ -159,20 +162,16 @@ def game():
             quit()
 
         if keys[pygame.K_w]:  # Up
-            if pos[1] > 0:
-                pos[1] -= 3
+            player.move(0, -3)
 
         if keys[pygame.K_d]:  # Right
-            if pos[0] < 790:
-                pos[0] += 3
+            player.move(3, 0)
 
         if keys[pygame.K_a]:  # Left
-            if pos[0] > 0:
-                pos[0] -= 3
+            player.move(-3, 0)
 
         if keys[pygame.K_s]:  # Down
-            if pos[1] < 790:
-                pos[1] += 3
+            player.move(0, 3)
 
         # Pause
         if keys[pygame.K_p]:
@@ -200,10 +199,10 @@ def game():
         sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, red)
 
         # player
-        sge_rect(display, *pos, 10, 10)
+        # sge_rect(display, player.x, player.y, 10, 10)
         # start temp
         # temp ratios
-        temp = (((((mouse_pos[0]-pos[0])**2)+((mouse_pos[1]-pos[1])**2))**0.5)/10)
+        temp = (((((mouse_pos[0]-player.x)**2)+((mouse_pos[1]-player.y)**2))**0.5)/10)
 
         # temp ZeroDivision error
         if temp != 0:
@@ -211,7 +210,7 @@ def game():
             # Fire
             if fire and cooldown < 100 and cooldown%4 == 0:
 
-                Bullet(*pos, (mouse_pos[0]-pos[0])/temp, (mouse_pos[1]-pos[1])/temp)
+                Bullet(player.x, player.y, (mouse_pos[0]-player.x)/temp, (mouse_pos[1]-player.y)/temp)
                 cooldown +=10
 
         # end temp
