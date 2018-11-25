@@ -93,8 +93,6 @@ class Player:
             self.y = display_width - Player.height
 
 
-
-
 class Block:
     objects = []
 
@@ -113,17 +111,22 @@ class Block:
 def collision_detection():
     for i in Bullet.objects:
         for e in Enemy.objects:
-            if e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.width):
+            if e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.height):
                 Enemy.objects.remove(e)
                 Bullet.objects.remove(i)
                 smart_spawn()
         for b in Block.objects:
-            if b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.width):
+            if b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length):
                 Bullet.objects.remove(i)
 
 
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
+    for e in Enemy.objects:
+        for b in Block.objects:
+            if (b.x < e.x < b.x + b.width or b.x < e.x + e.width < b.x + b.width) and (b.y < e.y < b.y + b.length or b.y < e.y + e.height < b.y + b.length):
+                Enemy.objects.remove(e)
+                smart_spawn()
 
 
 def get_input():
@@ -138,7 +141,7 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    Block(200, 200, 100, 100)
+    Block(0, 0, 800, 780)
     # Main loop
     smart_spawn()
     while True:
