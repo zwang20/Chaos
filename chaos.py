@@ -13,6 +13,8 @@ clock = pygame.time.Clock()
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
 
 # creat windows
 display_width = 800
@@ -43,14 +45,7 @@ class Enemy:
 
     def display():
         for i in Enemy.objects:
-            pygame.draw.rect(display, black, (i.x, i.y, Enemy.width, Enemy.height))
-
-    def renew():
-        for e in Enemy.objects:
-            for i in Bullet.objects:
-                if e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.width):
-                    Enemy.objects.remove(e)
-                    smart_spawn()
+            pygame.draw.rect(display, red, (i.x, i.y, Enemy.width, Enemy.height))
 
 
 class Bullet:
@@ -65,7 +60,7 @@ class Bullet:
 
     def display():
         for i in Bullet.objects:
-            pygame.draw.line(display, red, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
+            pygame.draw.line(display, black, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
 
     def renew():
         for i in Bullet.objects:
@@ -85,14 +80,36 @@ class Player:
 
     def display():
         for i in Player.objects:
-            pygame.draw.rect(display, black, (i.x, i.y, Player.width, Player.height))
+            pygame.draw.rect(display, blue, (i.x, i.y, Player.width, Player.height))
 
     def move(self, x, y):
         self.x += x
         self.y += y
 
 class Block:
-    pass
+    objects = []
+
+    def __init__(self, x, y, width, length):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.length = length
+        Block.objects.append(self)
+
+    def display():
+        for i in Block.objects:
+            pygame.draw.rect(display, black, (i.x, i.y, i.width, i.length))
+
+def collision_detection():
+    for i in Bullet.objects:
+        for e in Enemy.objects:
+            if e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.width):
+                Enemy.objects.remove(e)
+                Bullet.objects.remove(i)
+                smart_spawn()
+        for b in Block.objects:
+            if b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.width):
+                Bullet.objects.remove(i)
 
 
 def smart_spawn():
@@ -107,7 +124,7 @@ def game():
 
     # Init cooldown
     cooldown = 0
-
+    Block(200, 200, 100, 100)
     # Main loop
     smart_spawn()
     while True:
@@ -118,9 +135,10 @@ def game():
         sge_print(display, str(int(10*clock.get_fps())/10)) # Fps display
 
         Enemy.display()
-        Enemy.renew()
+        collision_detection()
         Bullet.renew()
         Bullet.display()
+        Block.display()
 
         # fire
         fire = False
