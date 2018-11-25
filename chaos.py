@@ -91,7 +91,16 @@ class Player:
             self.x = display_width - Player.width
         if self.y + Player.height >= display_width:
             self.y = display_width - Player.height
-
+        for b in Block.objects:
+            if (b.x < self.x < b.x + b.width or b.x < self.x + Player.width < b.x + b.width) and (b.y < self.y < b.y + b.length or b.y < self.y + Player.height < b.y + b.length):
+                if x > 0:
+                    self.x = b.x - Player.width
+                if x < 0:
+                    self.x = b.x + b.width
+                if y > 0:
+                    self.y = b.y - Player.height
+                if y < 0:
+                    self.y = b.y + b.length
 
 class Block:
     objects = []
