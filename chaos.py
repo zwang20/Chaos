@@ -83,6 +83,16 @@ class Player:
     def move(self, x, y):
         self.x += x
         self.y += y
+        if self.x <= 0:
+            self.x = 0
+        if self.y <= 0:
+            self.y = 0
+        if self.x + Player.width >= display_width:
+            self.x = display_width - Player.width
+        if self.y + Player.height >= display_width:
+            self.y = display_width - Player.height
+
+
 
 
 class Block:
