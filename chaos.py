@@ -123,7 +123,10 @@ def collision_detection():
             if e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.height):
                 Enemy.objects.remove(e)
                 Bullet.objects.remove(i)
-                smart_spawn()
+                if len(Enemy.objects) == 0:
+                    smart_spawn()
+                if clock.get_fps() > 25:
+                    smart_spawn()
     for i in Bullet.objects:
         for b in Block.objects:
             if b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length):
