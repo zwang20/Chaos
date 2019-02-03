@@ -30,6 +30,7 @@ pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_
 # Disable Mouse
 pygame.mouse.set_visible(False)
 
+
 class Enemy:
     objects = []
     width = 10
