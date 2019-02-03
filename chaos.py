@@ -238,7 +238,7 @@ def game():
             # Fire
             if fire and cooldown < 100 and cooldown%4 == 0:
 
-                Bullet(player.x, player.y, (mouse_pos[0]-player.x)/temp, (mouse_pos[1]-player.y)/temp)
+                Bullet((player.x+Player.width/2), (player.y+player.height/2), (mouse_pos[0]-player.x)/temp, (mouse_pos[1]-player.y)/temp)
                 cooldown +=10
 
         # end temp
