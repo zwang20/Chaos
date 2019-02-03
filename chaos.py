@@ -3,6 +3,9 @@ import os
 from sge import *
 import random
 
+# Debug
+DEBUG = False
+
 # init pygame
 pygame.init()
 
@@ -162,6 +165,9 @@ def game():
     # Main loop
     smart_spawn()
 
+    # bullet spread
+    spread = 10
+
     while True:
 
         # initilasion
@@ -231,8 +237,17 @@ def game():
         sge_rect(display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, RED)
         sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, RED)
 
+        # temperory mouse
+        temp_spread_x = random.randint(-spread, spread)
+        temp_spread_y = random.randint(-spread, spread)
+
+        # Debug
+        if DEBUG:
+            pygame.draw.line(game_display, BLACK, (player.x+Player.width/2, player.y+player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
+            cooldown = 0
+
         # temp ratios
-        temp = (((((mouse_pos[0]-player.x)**2)+((mouse_pos[1]-player.y)**2))**0.5)/10)
+        temp = (((((mouse_pos[0]+temp_spread_x-player.x)**2)+((mouse_pos[1]+temp_spread_y-player.y)**2))**0.5)/10)
 
         # temp ZeroDivision error
         if temp != 0:
@@ -240,7 +255,7 @@ def game():
             # Fire
             if fire and cooldown < 100 and cooldown%4 == 0:
 
-                Bullet((player.x+Player.width/2), (player.y+player.height/2), (mouse_pos[0]-player.x)/temp, (mouse_pos[1]-player.y)/temp)
+                Bullet((player.x+Player.width/2), (player.y+player.height/2), (mouse_pos[0]-player.x+temp_spread_x)/temp, (mouse_pos[1]-player.y+temp_spread_y)/temp)
                 cooldown +=10
 
         # end temp
