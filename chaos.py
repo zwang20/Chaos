@@ -10,11 +10,11 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # colours
-white = (255, 255, 255)
-black = (0, 0, 0)
-red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 # creat windows
 display_width = 800
@@ -42,7 +42,7 @@ class Enemy:
 
     def display():
         for i in Enemy.objects:
-            pygame.draw.rect(display, red, (i.x, i.y, Enemy.width, Enemy.height))
+            pygame.draw.rect(display, RED, (i.x, i.y, Enemy.width, Enemy.height))
 
 
 class Bullet:
@@ -57,7 +57,7 @@ class Bullet:
 
     def display():
         for i in Bullet.objects:
-            pygame.draw.line(display, black, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
+            pygame.draw.line(display, BLACK, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
 
     def renew():
         for i in Bullet.objects:
@@ -78,7 +78,7 @@ class Player:
 
     def display(self):
         for i in Player.objects:
-            pygame.draw.rect(display, blue, (i.x, i.y, Player.width, Player.height))
+            pygame.draw.rect(display, BLUE, (i.x, i.y, Player.width, Player.height))
 
     def move(self, x, y):
         self.x += x
@@ -115,7 +115,7 @@ class Block:
 
     def display():
         for i in Block.objects:
-            pygame.draw.rect(display, black, (i.x, i.y, i.width, i.length))
+            pygame.draw.rect(display, BLACK, (i.x, i.y, i.width, i.length))
 
 
 def collision_detection():
@@ -225,8 +225,8 @@ def game():
             fire = True
 
         # mouse
-        sge_rect(display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, red)
-        sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, red)
+        sge_rect(display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, RED)
+        sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, RED)
 
         # player
         # sge_rect(display, player.x, player.y, 10, 10)
@@ -251,8 +251,8 @@ def game():
             cooldown -= 1
 
         # Cooldown bar
-        sge_rect(display, 700, 790, 100, 10, white)
-        sge_rect(display, 700, 790, cooldown, 10, red)
+        sge_rect(display, 700, 790, 100, 10, WHITE)
+        sge_rect(display, 700, 790, cooldown, 10, RED)
 
         pygame.display.update() # update
         # This should be the last thing in the loop
