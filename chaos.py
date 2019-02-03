@@ -229,9 +229,6 @@ def game():
         sge_rect(display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, RED)
         sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, RED)
 
-        # player
-        # sge_rect(display, player.x, player.y, 10, 10)
-        # start temp
         # temp ratios
         temp = (((((mouse_pos[0]-player.x)**2)+((mouse_pos[1]-player.y)**2))**0.5)/10)
 
