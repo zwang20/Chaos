@@ -158,11 +158,13 @@ def game():
     cooldown = 0
     Block(100, 100, 600, 100)
     Block(100, 600, 600, 100)
+
     # Main loop
     smart_spawn()
+
     while True:
 
-        # init
+        # initilasion
         clock.tick(30) # Frames per second
         sge_clear(display) # Clear
         sge_print(display, str(int(10*clock.get_fps())/10)) # Fps display
