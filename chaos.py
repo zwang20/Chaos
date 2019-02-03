@@ -102,6 +102,7 @@ class Player:
                 if y < 0:
                     self.y = b.y + b.length
 
+
 class Block:
     objects = []
 
