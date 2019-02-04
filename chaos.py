@@ -2,6 +2,7 @@ import pygame
 import os
 from sge import *
 import random
+import sys
 
 # Debug
 DEBUG = False
@@ -150,7 +151,7 @@ def smart_spawn():
 def get_input():
     if pygame.event.peek(pygame.QUIT) or pygame.key.get_pressed()[pygame.K_q]:
         pygame.quit()
-        quit()
+        sys.exit()
 
 
 def game():
@@ -196,9 +197,8 @@ def game():
         get_input()
 
         if keys[pygame.K_q]:  # Quit
-            pygame.display.quit()
             pygame.quit()
-            quit()
+            sys.exit()
 
         if keys[pygame.K_w]:  # Up
             player.move(0, -3)
