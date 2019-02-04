@@ -149,7 +149,7 @@ def smart_spawn():
 
 
 def get_input():
-    if pygame.event.peek(pygame.QUIT) or pygame.key.get_pressed()[pygame.K_q]:
+    if pygame.event.peek(pygame.QUIT):
         pygame.quit()
         sys.exit()
 
@@ -196,20 +196,20 @@ def game():
 
         get_input()
 
-        if keys[pygame.K_q]:  # Quit
+        if keys[pygame.K_q] and (keys[pygame.K_LMETA] or keys[pygame.K_RMETA]):  # Quit
             pygame.quit()
             sys.exit()
 
-        if keys[pygame.K_w]:  # Up
+        if keys[pygame.K_w] or keys[pygame.K_UP]:  # Up
             player.move(0, -3)
 
-        if keys[pygame.K_d]:  # Right
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:  # Right
             player.move(3, 0)
 
-        if keys[pygame.K_a]:  # Left
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:  # Left
             player.move(-3, 0)
 
-        if keys[pygame.K_s]:  # Down
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:  # Down
             player.move(0, 3)
 
         # Pause
