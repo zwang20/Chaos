@@ -29,7 +29,9 @@ display = pygame.display.set_mode([display_width, display_height])
 pygame.display.set_caption('Project nont')
 
 # set icon
-pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_nont.png')))
+pygame.display.set_icon(
+    pygame.image.load(os.path.join('assets', '32x32_project_nont.png'))
+)
 
 # Disable Mouse
 pygame.mouse.set_visible(False)
@@ -47,7 +49,8 @@ class Enemy:
 
     def display():
         for i in Enemy.objects:
-            pygame.draw.rect(display, RED, (i.x, i.y, Enemy.width, Enemy.height))
+            pygame.draw.rect(
+                display, RED, (i.x, i.y, Enemy.width, Enemy.height))
 
 
 class Bullet:
@@ -62,7 +65,8 @@ class Bullet:
 
     def display():
         for i in Bullet.objects:
-            pygame.draw.line(display, BLACK, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
+            pygame.draw.line(
+                display, BLACK, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
 
     def renew():
         for i in Bullet.objects:
@@ -140,7 +144,8 @@ def collision_detection():
 
 
 def smart_spawn():
-    Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
+    Enemy(random.randint(1, display_width - Enemy.height - 1),
+          random.randint(1, display_width - Enemy.width - 1))
     for e in Enemy.objects:
         for b in Block.objects:
             if (b.x < e.x < b.x + b.width or b.x < e.x + e.width < b.x + b.width) and (b.y < e.y < b.y + b.length or b.y < e.y + e.height < b.y + b.length):
@@ -172,9 +177,9 @@ def game():
     while True:
 
         # initilasion
-        clock.tick(30) # Frames per second
-        sge_clear(display) # Clear
-        sge_print(display, str(int(10*clock.get_fps())/10)) # Fps display
+        clock.tick(30)  # Frames per second
+        sge_clear(display)  # Clear
+        sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
         Enemy.display()
         collision_detection()
@@ -226,7 +231,7 @@ def game():
             get_input()
             if keys[pygame.K_x]:
                 pause = False
-            pygame.display.update() # update
+            pygame.display.update()  # update
             # This should be the last thing in the loop
 
         # fire input
@@ -243,20 +248,23 @@ def game():
 
         # Debug
         if DEBUG:
-            pygame.draw.line(game_display, BLACK, (player.x+Player.width/2, player.y+player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
+            pygame.draw.line(game_display, BLACK, (player.x+Player.width/2, player.y +
+                                                   player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
             cooldown = 0
 
         # temp ratios
-        temp = (((((mouse_pos[0]+temp_spread_x-player.x)**2)+((mouse_pos[1]+temp_spread_y-player.y)**2))**0.5)/10)
+        temp = (((((mouse_pos[0]+temp_spread_x-player.x)**2) +
+                  ((mouse_pos[1]+temp_spread_y-player.y)**2))**0.5)/10)
 
         # temp ZeroDivision error
         if temp != 0:
 
             # Fire
-            if fire and cooldown < 100 and cooldown%4 == 0:
+            if fire and cooldown < 100 and cooldown % 4 == 0:
 
-                Bullet((player.x+Player.width/2), (player.y+player.height/2), (mouse_pos[0]-player.x+temp_spread_x)/temp, (mouse_pos[1]-player.y+temp_spread_y)/temp)
-                cooldown +=10
+                Bullet((player.x+Player.width/2), (player.y+player.height/2),
+                       (mouse_pos[0]-player.x+temp_spread_x)/temp, (mouse_pos[1]-player.y+temp_spread_y)/temp)
+                cooldown += 10
 
         # end temp
         del temp
@@ -269,7 +277,8 @@ def game():
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
 
-        pygame.display.update() # update
+        pygame.display.update()  # update
         # This should be the last thing in the loop
+
 
 game()
