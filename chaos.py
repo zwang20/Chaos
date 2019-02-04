@@ -4,9 +4,6 @@ from sge import *
 import random
 import sys
 
-# Debug
-DEBUG = False
-
 # init pygame
 pygame.init()
 
@@ -161,6 +158,9 @@ def get_input():
 
 def game():
 
+    # Debug
+    DEBUG = False
+
     player = Player(400, 400)
 
     # Init cooldown
@@ -204,6 +204,9 @@ def game():
         if keys[pygame.K_q] and (keys[pygame.K_LMETA] or keys[pygame.K_RMETA]):  # Quit
             pygame.quit()
             sys.exit()
+
+        if keys[pygame.K_e] and (keys[pygame.K_LMETA] or keys[pygame.K_RMETA]):  # Quit
+            DEBUG = not DEBUG
 
         if keys[pygame.K_w] or keys[pygame.K_UP]:  # Up
             player.move(0, -3)
