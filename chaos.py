@@ -3,6 +3,7 @@ import os
 from sge import *
 import random
 import sys
+import math
 
 # init pygame
 pygame.init()
@@ -17,13 +18,13 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# creat windows
+# creat window
 display_width = 800
 display_height = 800
 display = pygame.display.set_mode([display_width, display_height])
 
 # set caption
-pygame.display.set_caption('Project nont')
+pygame.display.set_caption('Chaos')
 
 # set icon
 pygame.display.set_icon(
@@ -53,12 +54,22 @@ class Enemy:
 class Bullet:
     objects = []
 
-    def __init__(self, x, y, vector_x, vector_y):
+    def __init__(self, x, y, angle):
         self.x = x
         self.y = y
-        self.vector_x = vector_x
-        self.vector_y = vector_y
+        self.angle = angle
+        # self.velocity = velocity
         Bullet.objects.append(self)
+        if self.angle == 180:
+            self.vector_x = 0 # is this nessery?
+        else:
+            self.vector_x = math.tan(math.radians(self.angle)) * (-1 if 90 < self.angle < 270 else 1)
+        if math.tan(math.radians(self.angle)) == 0:
+            self.vector_y = (math.tan(math.radians(90)))
+        elif self.angle < 180:
+            self.vector_y = (1 / math.tan(math.radians(self.angle)))
+        else:
+            self.vector_y = (-1 / math.tan(math.radians(self.angle)))
 
     def display():
         for i in Bullet.objects:
@@ -80,6 +91,7 @@ class Player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.angle = 0
         Player.objects.append(self)
 
     def display(self):
@@ -107,6 +119,39 @@ class Player:
                     self.y = b.y - Player.height
                 if y < 0:
                     self.y = b.y + b.length
+
+    def get_angle(self):
+        get_angle_mouse_pos = pygame.mouse.get_pos()
+        get_angle_mouse_x = get_angle_mouse_pos[0]
+        get_angle_mouse_y = get_angle_mouse_pos[1]
+        get_angle_player_x = self.x + self.width/2
+        get_angle_player_y = self.y + self.height/2
+        get_angle_difference_x = abs(get_angle_mouse_x - get_angle_player_x)
+        get_angle_difference_y = abs(get_angle_mouse_y - get_angle_player_y)
+        # seperate into 4 quadrents
+        if get_angle_mouse_x > get_angle_player_x: # right of Player
+            if get_angle_mouse_y < get_angle_player_y: # quadrent 1
+                return math.degrees(math.atan(get_angle_difference_x/get_angle_difference_y))
+            elif get_angle_mouse_y > get_angle_player_y: # quadrent 2
+                return 90 + math.degrees(math.atan(get_angle_difference_y/get_angle_difference_x))
+        elif get_angle_mouse_x < get_angle_player_x: # left of Player
+            if get_angle_mouse_y < get_angle_player_y: # quadrent 4
+                return 270 + math.degrees(math.atan(get_angle_difference_y/get_angle_difference_x))
+            elif get_angle_mouse_y > get_angle_player_y: # quadrent 3
+                return 180 + math.degrees(math.atan(get_angle_difference_x/get_angle_difference_y))
+        elif get_angle_difference_x == 0: # same left&right
+            if get_angle_difference_y == 0: # same point
+                return 0
+            elif get_angle_mouse_y < get_angle_player_y: # above
+                return 0
+            elif get_angle_mouse_y > get_angle_player_y: # below
+                return 180
+        if get_angle_difference_y == 0: # same elevation
+            if get_angle_mouse_x < get_angle_player_x: # left
+                return 270
+            elif get_angle_mouse_x > get_angle_player_x: # right
+                return 90
+        return 0
 
 
 class Block:
@@ -172,7 +217,7 @@ def game():
     smart_spawn()
 
     # bullet spread
-    spread = 10
+    spread = 0
 
     while True:
 
@@ -255,22 +300,23 @@ def game():
                                                    player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
             cooldown = 0
 
-        # temp ratios
-        temp = (((((mouse_pos[0]+temp_spread_x-player.x)**2) +
-                  ((mouse_pos[1]+temp_spread_y-player.y)**2))**0.5)/10)
 
-        # temp ZeroDivision error
-        if temp != 0:
+        player.angle = Player.get_angle(player)
 
-            # Fire
-            if fire and cooldown < 100 and cooldown % 4 == 0:
+        # if 90 < player.angle < 270:
+        #     print(-math.tan(math.radians(player.angle)))
+        # else:
+        #     print(math.tan(math.radians(player.angle)))
 
-                Bullet((player.x+Player.width/2), (player.y+player.height/2),
-                       (mouse_pos[0]-player.x+temp_spread_x)/temp, (mouse_pos[1]-player.y+temp_spread_y)/temp)
-                cooldown += 10
 
-        # end temp
-        del temp
+
+
+        # Fire
+        if fire and cooldown < 100 and cooldown % 4 == 0:
+            Bullet(player.x,player.y,player.angle)
+            # bullet here
+            cooldown += 10
+
 
         # Cooldown
         if cooldown > 0:
