@@ -209,7 +209,7 @@ def game():
     smart_spawn()
 
     # bullet spread
-    spread = 0
+    spread = 5
 
     while True:
 
@@ -295,11 +295,16 @@ def game():
 
         player.angle = Player.get_angle(player)
 
+        # spread
+        player.angle += random.randint(-spread, spread)
 
         # Fire
         if fire and cooldown < 100 and cooldown % 4 == 0:
-            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle, 10)
+
             # bullet here
+            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle, 10)
+
+            #cooldown
             cooldown += 10
 
 
