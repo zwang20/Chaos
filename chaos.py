@@ -3,9 +3,7 @@ import os
 from sge import *
 import random
 import sys
-
-# Debug
-DEBUG = False
+import math
 
 # init pygame
 pygame.init()
@@ -20,16 +18,18 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# creat windows
+# creat window
 display_width = 800
 display_height = 800
 display = pygame.display.set_mode([display_width, display_height])
 
 # set caption
-pygame.display.set_caption('Project nont')
+pygame.display.set_caption('Chaos')
 
 # set icon
-pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_nont.png')))
+pygame.display.set_icon(
+    pygame.image.load(os.path.join('assets', '32x32_project_nont.png'))
+)
 
 # Disable Mouse
 pygame.mouse.set_visible(False)
@@ -47,22 +47,26 @@ class Enemy:
 
     def display():
         for i in Enemy.objects:
-            pygame.draw.rect(display, RED, (i.x, i.y, Enemy.width, Enemy.height))
+            pygame.draw.rect(
+                display, RED, (i.x, i.y, Enemy.width, Enemy.height))
 
 
 class Bullet:
     objects = []
 
-    def __init__(self, x, y, vector_x, vector_y):
+    def __init__(self, x, y, angle, velocity):
         self.x = x
         self.y = y
-        self.vector_x = vector_x
-        self.vector_y = vector_y
+        self.angle = angle
+        self.velocity = velocity
         Bullet.objects.append(self)
+        self.vector_x = velocity * math.sin(math.radians(self.angle))
+        self.vector_y = velocity * -math.cos(math.radians(self.angle))
 
     def display():
         for i in Bullet.objects:
-            pygame.draw.line(display, BLACK, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
+            pygame.draw.line(
+                display, BLACK, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
 
     def renew():
         for i in Bullet.objects:
@@ -79,6 +83,7 @@ class Player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.angle = 0
         Player.objects.append(self)
 
     def display(self):
@@ -106,6 +111,39 @@ class Player:
                     self.y = b.y - Player.height
                 if y < 0:
                     self.y = b.y + b.length
+
+    def get_angle(self):
+        get_angle_mouse_pos = pygame.mouse.get_pos()
+        get_angle_mouse_x = get_angle_mouse_pos[0]
+        get_angle_mouse_y = get_angle_mouse_pos[1]
+        get_angle_player_x = self.x + self.width/2
+        get_angle_player_y = self.y + self.height/2
+        get_angle_difference_x = abs(get_angle_mouse_x - get_angle_player_x)
+        get_angle_difference_y = abs(get_angle_mouse_y - get_angle_player_y)
+        # seperate into 4 quadrents
+        if get_angle_mouse_x > get_angle_player_x: # right of Player
+            if get_angle_mouse_y < get_angle_player_y: # quadrent 1
+                return math.degrees(math.atan(get_angle_difference_x/get_angle_difference_y))
+            elif get_angle_mouse_y > get_angle_player_y: # quadrent 2
+                return 90 + math.degrees(math.atan(get_angle_difference_y/get_angle_difference_x))
+        elif get_angle_mouse_x < get_angle_player_x: # left of Player
+            if get_angle_mouse_y < get_angle_player_y: # quadrent 4
+                return 270 + math.degrees(math.atan(get_angle_difference_y/get_angle_difference_x))
+            elif get_angle_mouse_y > get_angle_player_y: # quadrent 3
+                return 180 + math.degrees(math.atan(get_angle_difference_x/get_angle_difference_y))
+        elif get_angle_difference_x == 0: # same left&right
+            if get_angle_difference_y == 0: # same point
+                return 0
+            elif get_angle_mouse_y < get_angle_player_y: # above
+                return 0
+            elif get_angle_mouse_y > get_angle_player_y: # below
+                return 180
+        if get_angle_difference_y == 0: # same elevation
+            if get_angle_mouse_x < get_angle_player_x: # left
+                return 270
+            elif get_angle_mouse_x > get_angle_player_x: # right
+                return 90
+        return 0
 
 
 class Block:
@@ -140,7 +178,8 @@ def collision_detection():
 
 
 def smart_spawn():
-    Enemy(random.randint(1, display_width - Enemy.height - 1), random.randint(1, display_width - Enemy.width - 1))
+    Enemy(random.randint(1, display_width - Enemy.height - 1),
+          random.randint(1, display_width - Enemy.width - 1))
     for e in Enemy.objects:
         for b in Block.objects:
             if (b.x < e.x < b.x + b.width or b.x < e.x + e.width < b.x + b.width) and (b.y < e.y < b.y + b.length or b.y < e.y + e.height < b.y + b.length):
@@ -149,12 +188,15 @@ def smart_spawn():
 
 
 def get_input():
-    if pygame.event.peek(pygame.QUIT) or pygame.key.get_pressed()[pygame.K_q]:
+    if pygame.event.peek(pygame.QUIT):
         pygame.quit()
         sys.exit()
 
 
 def game():
+
+    # Debug
+    DEBUG = False
 
     player = Player(400, 400)
 
@@ -167,14 +209,14 @@ def game():
     smart_spawn()
 
     # bullet spread
-    spread = 10
+    spread = 5
 
     while True:
 
         # initilasion
-        clock.tick(30) # Frames per second
-        sge_clear(display) # Clear
-        sge_print(display, str(int(10*clock.get_fps())/10)) # Fps display
+        clock.tick(30)  # Frames per second
+        sge_clear(display)  # Clear
+        sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
         Enemy.display()
         collision_detection()
@@ -196,20 +238,23 @@ def game():
 
         get_input()
 
-        if keys[pygame.K_q]:  # Quit
+        if keys[pygame.K_q] and (keys[pygame.K_LMETA] or keys[pygame.K_RMETA]):  # Quit
             pygame.quit()
             sys.exit()
 
-        if keys[pygame.K_w]:  # Up
+        if keys[pygame.K_e] and (keys[pygame.K_LMETA] or keys[pygame.K_RMETA]):  # Quit
+            DEBUG = not DEBUG
+
+        if keys[pygame.K_w] or keys[pygame.K_UP]:  # Up
             player.move(0, -3)
 
-        if keys[pygame.K_d]:  # Right
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:  # Right
             player.move(3, 0)
 
-        if keys[pygame.K_a]:  # Left
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:  # Left
             player.move(-3, 0)
 
-        if keys[pygame.K_s]:  # Down
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:  # Down
             player.move(0, 3)
 
         # Pause
@@ -226,7 +271,7 @@ def game():
             get_input()
             if keys[pygame.K_x]:
                 pause = False
-            pygame.display.update() # update
+            pygame.display.update()  # update
             # This should be the last thing in the loop
 
         # fire input
@@ -243,23 +288,25 @@ def game():
 
         # Debug
         if DEBUG:
-            pygame.draw.line(game_display, BLACK, (player.x+Player.width/2, player.y+player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
+            pygame.draw.line(game_display, BLACK, (player.x+Player.width/2, player.y +
+                                                   player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
             cooldown = 0
 
-        # temp ratios
-        temp = (((((mouse_pos[0]+temp_spread_x-player.x)**2)+((mouse_pos[1]+temp_spread_y-player.y)**2))**0.5)/10)
 
-        # temp ZeroDivision error
-        if temp != 0:
+        player.angle = Player.get_angle(player)
 
-            # Fire
-            if fire and cooldown < 100 and cooldown%4 == 0:
+        # spread
+        player.angle += random.randint(-spread, spread)
 
-                Bullet((player.x+Player.width/2), (player.y+player.height/2), (mouse_pos[0]-player.x+temp_spread_x)/temp, (mouse_pos[1]-player.y+temp_spread_y)/temp)
-                cooldown +=10
+        # Fire
+        if fire and cooldown < 100 and cooldown % 4 == 0:
 
-        # end temp
-        del temp
+            # bullet here
+            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle, 10)
+
+            #cooldown
+            cooldown += 10
+
 
         # Cooldown
         if cooldown > 0:
@@ -269,7 +316,8 @@ def game():
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
 
-        pygame.display.update() # update
+        pygame.display.update()  # update
         # This should be the last thing in the loop
+
 
 game()
