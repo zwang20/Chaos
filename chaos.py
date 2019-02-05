@@ -54,22 +54,14 @@ class Enemy:
 class Bullet:
     objects = []
 
-    def __init__(self, x, y, angle):
+    def __init__(self, x, y, angle, velocity):
         self.x = x
         self.y = y
         self.angle = angle
-        # self.velocity = velocity
+        self.velocity = velocity
         Bullet.objects.append(self)
-        if self.angle == 180:
-            self.vector_x = 0 # is this nessery?
-        else:
-            self.vector_x = math.tan(math.radians(self.angle)) * (-1 if 90 < self.angle < 270 else 1)
-        if math.tan(math.radians(self.angle)) == 0:
-            self.vector_y = (math.tan(math.radians(90)))
-        elif self.angle < 180:
-            self.vector_y = (1 / math.tan(math.radians(self.angle)))
-        else:
-            self.vector_y = (-1 / math.tan(math.radians(self.angle)))
+        self.vector_x = velocity * math.sin(math.radians(self.angle))
+        self.vector_y = velocity * -math.cos(math.radians(self.angle))
 
     def display():
         for i in Bullet.objects:
@@ -303,17 +295,10 @@ def game():
 
         player.angle = Player.get_angle(player)
 
-        # if 90 < player.angle < 270:
-        #     print(-math.tan(math.radians(player.angle)))
-        # else:
-        #     print(math.tan(math.radians(player.angle)))
-
-
-
 
         # Fire
         if fire and cooldown < 100 and cooldown % 4 == 0:
-            Bullet(player.x,player.y,player.angle)
+            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle, 10)
             # bullet here
             cooldown += 10
 
