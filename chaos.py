@@ -225,8 +225,9 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    Block(100, 100, 600, 100)
-    Block(100, 600, 600, 100)
+    # Block(100, 100, 600, 100)
+    # Block(100, 600, 600, 100)
+
     # Block(0, 0, 800, 10)
     # Block(0, 0, 10, 800)
     # Block(790, 0, 10, 800)
@@ -340,8 +341,6 @@ def game():
         # Cooldown bar
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
-
-        print(len(Bullet.objects))
 
         pygame.display.update()  # update
         # This should be the last thing in the loop
