@@ -86,6 +86,8 @@ class Bullet:
             if 0 <= i.x <= display_width and 0 <= i.y <= display_height:
                 i.x += i.vector_x
                 i.y += i.vector_y
+            else:
+                Bullet.objects.remove(i)
 
 
 class Player:
@@ -191,8 +193,11 @@ def collision_detection():
                     smart_spawn()
     for i in Bullet.objects:
         for b in Block.objects:
-            if b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length):
-                Bullet.objects.remove(i)
+            if (b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length)) or (b.x < i.x + i.vector_x < (b.x + b.width) and b.y < i.y + i.vector_y < (b.y + b.length)):
+                try:
+                    Bullet.objects.remove(i)
+                except ValueError:
+                    pass
 
 
 def smart_spawn():
@@ -222,6 +227,11 @@ def game():
     cooldown = 0
     Block(100, 100, 600, 100)
     Block(100, 600, 600, 100)
+    # Block(0, 0, 800, 10)
+    # Block(0, 0, 10, 800)
+    # Block(790, 0, 10, 800)
+    # Block(0, 780, 800, 10)
+
 
     # Main loop
     smart_spawn()
@@ -330,6 +340,8 @@ def game():
         # Cooldown bar
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
+
+        print(len(Bullet.objects))
 
         pygame.display.update()  # update
         # This should be the last thing in the loop
