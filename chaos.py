@@ -183,6 +183,8 @@ def collision_detection():
                 try:
                     Enemy.objects.remove(e)
                     Bullet.objects.remove(i)
+                except ValueError:
+                    pass
                 if len(Enemy.objects) == 0 or int(clock.get_fps()) > 25:
                     smart_spawn()
                 if int(clock.get_fps()) > 25:
