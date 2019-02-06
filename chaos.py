@@ -301,7 +301,6 @@ def game():
 
         # temperory mouse
         temp_spread_x = random.uniform(-spread, spread)
-        print(random.uniform(-spread, spread))
         temp_spread_y = random.uniform(-spread, spread)
 
         # Debug
