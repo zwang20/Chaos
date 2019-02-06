@@ -35,6 +35,11 @@ pygame.display.set_icon(
 pygame.mouse.set_visible(False)
 
 
+# Load images
+rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_rifle.png'))
+sniper_rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_sniper.png'))
+
+
 class Enemy:
     objects = []
     width = 10
@@ -79,6 +84,7 @@ class Player:
     objects = []
     width = 10
     height = 10
+    angle = 0
 
     def __init__(self, x, y):
         self.x = x
@@ -89,6 +95,7 @@ class Player:
     def display(self):
         for i in Player.objects:
             pygame.draw.rect(display, BLUE, (i.x, i.y, Player.width, Player.height))
+            display.blit(pygame.transform.rotate(rifle_img, -self.angle+90), (self.x, self.y))
 
     def move(self, x, y):
         self.x += x
@@ -209,7 +216,7 @@ def game():
     smart_spawn()
 
     # bullet spread
-    spread = 5
+    spread = 1
 
     while True:
 
@@ -295,14 +302,12 @@ def game():
 
         player.angle = Player.get_angle(player)
 
-        # spread
-        player.angle += random.randint(-spread, spread)
 
         # Fire
         if fire and cooldown < 100 and cooldown % 4 == 0:
 
             # bullet here
-            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle, 10)
+            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
 
             #cooldown
             cooldown += 10
