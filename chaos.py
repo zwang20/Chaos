@@ -182,9 +182,9 @@ def collision_detection():
             if (e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.height)) or (e.x < i.x + i.vector_x < (e.x + Enemy.width) and e.y < i.y + i.vector_y < (e.y + Enemy.height)):
                 Enemy.objects.remove(e)
                 Bullet.objects.remove(i)
-                if int(clock.get_fps()) > 25:
+                if len(Enemy.objects) == 0 or int(clock.get_fps()) > 25:
                     smart_spawn()
-                if len(Enemy.objects) == 0:
+                if int(clock.get_fps()) > 25:
                     smart_spawn()
     for i in Bullet.objects:
         for b in Block.objects:
@@ -227,7 +227,6 @@ def game():
     spread = 1
 
     while True:
-
         # initilasion
         clock.tick(30)  # Frames per second
         sge_clear(display)  # Clear
