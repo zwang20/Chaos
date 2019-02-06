@@ -79,7 +79,7 @@ class Bullet:
     def display():
         for i in Bullet.objects:
             pygame.draw.line(
-                display, BLACK, (i.x, i.y), (i.x+i.vector_x, i.y+i.vector_y), 2)
+                display, BLACK, (i.x, i.y), (i.x+i.vector_x*5/i.velocity, i.y+i.vector_y*5/i.velocity), 2)
 
     def renew():
         for i in Bullet.objects:
