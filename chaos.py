@@ -300,8 +300,9 @@ def game():
         sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, RED)
 
         # temperory mouse
-        temp_spread_x = random.randint(-spread, spread)
-        temp_spread_y = random.randint(-spread, spread)
+        temp_spread_x = random.uniform(-spread, spread)
+        print(random.uniform(-spread, spread))
+        temp_spread_y = random.uniform(-spread, spread)
 
         # Debug
         if DEBUG:
