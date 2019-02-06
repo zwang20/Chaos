@@ -55,6 +55,14 @@ class Enemy:
             pygame.draw.rect(
                 display, RED, (i.x, i.y, Enemy.width, Enemy.height))
 
+    def move():
+        for i in Enemy.objects:
+            pass
+
+    def ai():
+        pass
+
+
 
 class Bullet:
     objects = []
@@ -171,7 +179,7 @@ class Block:
 def collision_detection():
     for i in Bullet.objects:
         for e in Enemy.objects:
-            if e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.height):
+            if (e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.height)) or (e.x < i.x + i.vector_x < (e.x + Enemy.width) and e.y < i.y + i.vector_y < (e.y + Enemy.height)):
                 Enemy.objects.remove(e)
                 Bullet.objects.remove(i)
                 if int(clock.get_fps()) > 25:
