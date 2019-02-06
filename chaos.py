@@ -87,7 +87,10 @@ class Bullet:
                 i.x += i.vector_x
                 i.y += i.vector_y
             else:
-                Bullet.objects.remove(i)
+                try:
+                    Bullet.objects.remove(i)
+                except ValueError:
+                    pass
 
 
 class Player:
