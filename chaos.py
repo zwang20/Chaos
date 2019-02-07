@@ -51,39 +51,38 @@ class GameObj(pygame.sprite.Sprite):
 
 class Block(GameObj):
 
-    family = pygame.sprite.RenderUpdates()
+    family = pygame.sprite.Group()
 
     def __init__(self, x, y, width, height):
+        super().__init__()
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        super().__init__()
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
-        # self.family.add(self)
 
 
 class Enemy:
-    objects = []
+
+    family = pygame.sprite.Group()
+
     width = 10
     height = 10
 
     def __init__(self, x, y):
-        Enemy.objects.append(self)
+        super().__init__()
         self.x = x
         self.y = y
-
-    def display():
-        for i in Enemy.objects:
-            pygame.draw.rect(
-                display, RED, (i.x, i.y, Enemy.width, Enemy.height))
+        self.image = pygame.Surface((self.width, self.height))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.x, self.y)
 
     def move():
-        for i in Enemy.objects:
-            pass
+        pass
 
     def ai():
         pass
@@ -98,8 +97,8 @@ class Bullet(GameObj):
 
     def __init__(self, x, y, angle, velocity):
         super().__init__()
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
         self.angle = angle
         self.velocity = velocity
         self.vector_x = velocity * math.sin(math.radians(self.angle))
@@ -110,10 +109,28 @@ class Bullet(GameObj):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
 
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, value):
+        self._x = value
+        self.rect.x = value
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, value):
+        self._y = value
+        self.rect.y = value
+
     def update(self):
-        if 0 < self.rect.x < display_width and 0 < self.rect.y < display_height:
-            self.rect.x += self.vector_x
-            self.rect.y += self.vector_y
+        if 0 <= self.rect.x <= display_width and 0 <= self.rect.y <= display_height:
+            self.x += self.vector_x
+            self.y += self.vector_y
         else:
             self.kill()
 
@@ -322,7 +339,7 @@ def game():
 
         update()
 
-        # print(GameObj.family.sprites())
+        print(player.angle)
 
         GameObj.family.draw(display) # draw sprites
 
