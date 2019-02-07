@@ -228,8 +228,8 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    # Block(100, 100, 600, 100)
-    # Block(100, 600, 600, 100)
+    Block(100, 100, 600, 100)
+    Block(100, 600, 600, 100)
 
     # Block(0, 0, 800, 10)
     # Block(0, 0, 10, 800)
@@ -245,7 +245,7 @@ def game():
 
     while True:
         # initilasion
-        clock.tick(30)  # Frames per second
+        clock.tick(60)  # Frames per second
         sge_clear(display)  # Clear
         sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
