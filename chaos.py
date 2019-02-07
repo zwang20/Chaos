@@ -41,6 +41,7 @@ sniper_rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_sniper.
 
 
 class GameObj(pygame.sprite.Sprite):
+
     family = pygame.sprite.RenderUpdates()
 
     def __init__(self):
@@ -62,7 +63,7 @@ class Block(GameObj):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
-        self.family.add(self)
+        # self.family.add(self)
 
 
 class Enemy:
@@ -88,48 +89,48 @@ class Enemy:
         pass
 
 
-class Bullet:
-    objects = []
+class Bullet(GameObj):
+
+    family = pygame.sprite.Group()
+
+    width = 2
+    height = 10
 
     def __init__(self, x, y, angle, velocity):
+        super().__init__()
         self.x = x
         self.y = y
         self.angle = angle
         self.velocity = velocity
-        Bullet.objects.append(self)
         self.vector_x = velocity * math.sin(math.radians(self.angle))
         self.vector_y = velocity * -math.cos(math.radians(self.angle))
+        self.image_ori = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        self.image_ori.fill(BLACK)
+        self.image = pygame.transform.rotate(self.image_ori, -self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
 
-    def display():
-        for i in Bullet.objects:
-            pygame.draw.line(
-                display, BLACK, (i.x, i.y), (i.x+i.vector_x*10/i.velocity, i.y+i.vector_y*10/i.velocity), 2)
-
-    def renew():
-        for i in Bullet.objects:
-            if 0 <= i.x <= display_width and 0 <= i.y <= display_height:
-                i.x += i.vector_x
-                i.y += i.vector_y
-            else:
-                try:
-                    Bullet.objects.remove(i)
-                except ValueError:
-                    pass
+    def update(self):
+        if 0 < self.rect.x < display_width and 0 < self.rect.y < display_height:
+            self.rect.x += self.vector_x
+            self.rect.y += self.vector_y
+        else:
+            self.kill()
 
 
 class Player(GameObj):
 
-    family = pygame.sprite.RenderUpdates()
+    family = pygame.sprite.GroupSingle() # only one sprite
 
     width = 10
     height = 10
     angle = 0
 
     def __init__(self, x, y):
+        super().__init__()
         self.x = x
         self.y = y
         self.angle = 0
-        super().__init__()
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
@@ -184,25 +185,12 @@ class Player(GameObj):
         return 0
 
 
-def collision_detection():
-    for i in Bullet.objects:
-        for e in Enemy.objects:
-            if (e.x < i.x < (e.x + Enemy.width) and e.y < i.y < (e.y + Enemy.height)) or (e.x < i.x + i.vector_x < (e.x + Enemy.width) and e.y < i.y + i.vector_y < (e.y + Enemy.height)):
-                try:
-                    Enemy.objects.remove(e)
-                    Bullet.objects.remove(i)
-                except ValueError:
-                    pass
-                if len(Enemy.objects) == 0 or int(clock.get_fps()) > 25:
-                    smart_spawn()
-                if int(clock.get_fps()) > 25:
-                    smart_spawn()
-    # add collision_detection
+# add collision_detection
 
 
-def smart_spawn():
-    Enemy(random.randint(1, display_width - Enemy.height - 1),
-          random.randint(1, display_width - Enemy.width - 1))
+# def smart_spawn():
+#     Enemy(random.randint(1, display_width - Enemy.height - 1),
+#           random.randint(1, display_width - Enemy.width - 1))
     # add block collision_detection
 
 
@@ -212,8 +200,9 @@ def get_input():
         sys.exit()
 
 
-def renew():
-    pass
+def update():
+    GameObj.family.update()
+
 
 def game():
 
@@ -228,7 +217,7 @@ def game():
     # Block(300, 300, 200, 200)
 
     # Main loop
-    smart_spawn()
+    # smart_spawn()
 
     # bullet spread
     spread = 1
@@ -240,9 +229,7 @@ def game():
         sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
         # Enemy.display()
-        collision_detection()
-        Bullet.renew()
-        Bullet.display()
+        # collision_detection()
 
         # fire
         fire = False
@@ -333,7 +320,9 @@ def game():
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
 
-        renew()
+        update()
+
+        # print(GameObj.family.sprites())
 
         GameObj.family.draw(display) # draw sprites
 
