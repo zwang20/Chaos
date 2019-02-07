@@ -129,7 +129,7 @@ class Player:
             self.x = display_width - Player.width
         if self.y + Player.height >= display_width:
             self.y = display_width - Player.height
-        for b in Block.objects:
+        for b in BlockOld.objects:
             if (b.x < self.x < b.x + b.width or b.x < self.x + Player.width < b.x + b.width) and (b.y < self.y < b.y + b.length or b.y < self.y + Player.height < b.y + b.length):
                 if x > 0:
                     self.x = b.x - Player.width
@@ -174,7 +174,7 @@ class Player:
         return 0
 
 
-class Block:
+class BlockOld:
     objects = []
 
     def __init__(self, x, y, width, length):
@@ -182,10 +182,10 @@ class Block:
         self.y = y
         self.width = width
         self.length = length
-        Block.objects.append(self)
+        BlockOld.objects.append(self)
 
     def display():
-        for i in Block.objects:
+        for i in BlockOld.objects:
             pygame.draw.rect(display, BLACK, (i.x, i.y, i.width, i.length))
 
 
@@ -203,7 +203,7 @@ def collision_detection():
                 if int(clock.get_fps()) > 25:
                     smart_spawn()
     for i in Bullet.objects:
-        for b in Block.objects:
+        for b in BlockOld.objects:
             if (b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length)) or (b.x < i.x + i.vector_x < (b.x + b.width) and b.y < i.y + i.vector_y < (b.y + b.length)):
                 try:
                     Bullet.objects.remove(i)
@@ -215,7 +215,7 @@ def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1),
           random.randint(1, display_width - Enemy.width - 1))
     for e in Enemy.objects:
-        for b in Block.objects:
+        for b in BlockOld.objects:
             if (b.x < e.x < b.x + b.width or b.x < e.x + e.width < b.x + b.width) and (b.y < e.y < b.y + b.length or b.y < e.y + e.height < b.y + b.length):
                 Enemy.objects.remove(e)
                 smart_spawn()
@@ -236,13 +236,13 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    Block(100, 100, 600, 100)
-    Block(100, 600, 600, 100)
+    BlockOld(100, 100, 600, 100)
+    BlockOld(100, 600, 600, 100)
 
-    # Block(0, 0, 800, 10)
-    # Block(0, 0, 10, 800)
-    # Block(790, 0, 10, 800)
-    # Block(0, 780, 800, 10)
+    # BlockOld(0, 0, 800, 10)
+    # BlockOld(0, 0, 10, 800)
+    # BlockOld(790, 0, 10, 800)
+    # BlockOld(0, 780, 800, 10)
 
 
     # Main loop
@@ -261,7 +261,7 @@ def game():
         collision_detection()
         Bullet.renew()
         Bullet.display()
-        Block.display()
+        BlockOld.display()
         player.display()
 
         # fire
