@@ -363,8 +363,8 @@ def game():
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
 
-        GameObj.family.draw(display)
-        
+        GameObj.family.draw(display) # draw sprites
+
         pygame.display.update()  # update
         # This should be the last thing in the loop
 
