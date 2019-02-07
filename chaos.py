@@ -65,7 +65,7 @@ class Block(GameObj):
         self.rect.topleft = (self.x, self.y)
 
 
-class Enemy:
+class Enemy(GameObj):
 
     family = pygame.sprite.Group()
 
@@ -205,10 +205,10 @@ class Player(GameObj):
 # add collision_detection
 
 
-# def smart_spawn():
-#     Enemy(random.randint(1, display_width - Enemy.height - 1),
-#           random.randint(1, display_width - Enemy.width - 1))
-    # add block collision_detection
+def smart_spawn():
+    Enemy(random.randint(1, display_width - Enemy.height - 1),
+          random.randint(1, display_width - Enemy.width - 1))
+
 
 
 def get_input():
@@ -234,7 +234,7 @@ def game():
     # Block(300, 300, 200, 200)
 
     # Main loop
-    # smart_spawn()
+    smart_spawn()
 
     # bullet spread
     spread = 1
@@ -339,7 +339,7 @@ def game():
 
         update()
 
-        print(player.angle)
+        print(GameObj.family.sprites())
 
         GameObj.family.draw(display) # draw sprites
 
