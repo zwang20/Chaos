@@ -61,7 +61,7 @@ class Block(GameObj):
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.topleft = (self.x, self.y)
         self.family.add(self)
 
 
@@ -117,8 +117,10 @@ class Bullet:
                     pass
 
 
-class Player:
-    objects = []
+class Player(GameObj):
+
+    family = pygame.sprite.RenderUpdates()
+
     width = 10
     height = 10
     angle = 0
@@ -127,12 +129,12 @@ class Player:
         self.x = x
         self.y = y
         self.angle = 0
-        Player.objects.append(self)
-
-    def display(self):
-        for i in Player.objects:
-            pygame.draw.rect(display, BLUE, (i.x, i.y, Player.width, Player.height))
-            display.blit(pygame.transform.rotate(rifle_img, -self.angle+90), (self.x, self.y))
+        super().__init__()
+        self.image = pygame.Surface((self.width, self.height))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.x, self.y)
+        self.family.add(self)
 
     def move(self, x, y):
         self.x += x
@@ -145,16 +147,8 @@ class Player:
             self.x = display_width - Player.width
         if self.y + Player.height >= display_width:
             self.y = display_width - Player.height
-        # for b in BlockOld.objects:
-        #     if (b.x < self.x < b.x + b.width or b.x < self.x + Player.width < b.x + b.width) and (b.y < self.y < b.y + b.length or b.y < self.y + Player.height < b.y + b.length):
-        #         if x > 0:
-        #             self.x = b.x - Player.width
-        #         if x < 0:
-        #             self.x = b.x + b.width
-        #         if y > 0:
-        #             self.y = b.y - Player.height
-        #         if y < 0:
-        #             self.y = b.y + b.length
+
+        # add collision_detection
 
     def get_angle(self):
         get_angle_mouse_pos = pygame.mouse.get_pos()
@@ -188,21 +182,6 @@ class Player:
             elif get_angle_mouse_x > get_angle_player_x: # right
                 return 90
         return 0
-
-
-# class BlockOld:
-#     objects = []
-#
-#     def __init__(self, x, y, width, length):
-#         self.x = x
-#         self.y = y
-#         self.width = width
-#         self.length = length
-#         BlockOld.objects.append(self)
-#
-#     def display():
-#         for i in BlockOld.objects:
-#             pygame.draw.rect(display, BLACK, (i.x, i.y, i.width, i.length))
 
 
 def collision_detection():
@@ -252,15 +231,8 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    # BlockOld(100, 100, 600, 100)
-    # BlockOld(100, 600, 600, 100)
+
     Block(300, 300, 200, 200)
-
-    # BlockOld(0, 0, 800, 10)
-    # BlockOld(0, 0, 10, 800)
-    # BlockOld(790, 0, 10, 800)
-    # BlockOld(0, 780, 800, 10)
-
 
     # Main loop
     smart_spawn()
@@ -274,12 +246,12 @@ def game():
         sge_clear(display)  # Clear
         sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
-        Enemy.display()
+        # Enemy.display()
         collision_detection()
         Bullet.renew()
         Bullet.display()
         # BlockOld.display()
-        player.display()
+        # player.display()
 
         # fire
         fire = False
