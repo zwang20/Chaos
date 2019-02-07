@@ -45,6 +45,7 @@ class Block(GameObj):
         self.rect = self.image.get_rect()
         Block.family.add(self)
 
+
 def game():
     Block(GREEN, 100, 100)
     while True:
@@ -52,6 +53,6 @@ def game():
         if keys[pygame.K_q] and (keys[pygame.K_LMETA] or keys[pygame.K_RMETA]) or pygame.event.peek(pygame.QUIT):  # Quit
             pygame.quit()
             sys.exit()
-        Block.family.draw(display)
+        GameObj.family.draw(display)
         pygame.display.update()
 game()

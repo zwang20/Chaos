@@ -40,6 +40,14 @@ rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_rifle.png'))
 sniper_rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_sniper.png'))
 
 
+class GameObj(pygame.sprite.Sprite):
+    family = pygame.sprite.RenderUpdates()
+
+    def __init__(self):
+        super().__init__()
+        GameObj.family.add(self)
+
+
 class Enemy:
     objects = []
     width = 10
