@@ -137,16 +137,16 @@ class Player(GameObj):
         self.family.add(self)
 
     def move(self, x, y):
-        self.x += x
-        self.y += y
-        if self.x <= 0:
-            self.x = 0
-        if self.y <= 0:
-            self.y = 0
-        if self.x + Player.width >= display_width:
-            self.x = display_width - Player.width
-        if self.y + Player.height >= display_width:
-            self.y = display_width - Player.height
+        self.rect.x += x
+        self.rect.y += y
+        if self.rect.x <= 0:
+            self.rect.x = 0
+        if self.rect.y <= 0:
+            self.rect.y = 0
+        if self.rect.x + Player.width >= display_width:
+            self.rect.x = display_width - Player.width
+        if self.rect.y + Player.height >= display_width:
+            self.rect.y = display_width - Player.height
 
         # add collision_detection
 
@@ -154,8 +154,8 @@ class Player(GameObj):
         get_angle_mouse_pos = pygame.mouse.get_pos()
         get_angle_mouse_x = get_angle_mouse_pos[0]
         get_angle_mouse_y = get_angle_mouse_pos[1]
-        get_angle_player_x = self.x + self.width/2
-        get_angle_player_y = self.y + self.height/2
+        get_angle_player_x = self.rect.x + self.width/2
+        get_angle_player_y = self.rect.y + self.height/2
         get_angle_difference_x = abs(get_angle_mouse_x - get_angle_player_x)
         get_angle_difference_y = abs(get_angle_mouse_y - get_angle_player_y)
         # seperate into 4 quadrents
@@ -197,23 +197,13 @@ def collision_detection():
                     smart_spawn()
                 if int(clock.get_fps()) > 25:
                     smart_spawn()
-    # for i in Bullet.objects:
-    #     for b in BlockOld.objects:
-    #         if (b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length)) or (b.x < i.x + i.vector_x < (b.x + b.width) and b.y < i.y + i.vector_y < (b.y + b.length)):
-    #             try:
-    #                 Bullet.objects.remove(i)
-    #             except ValueError:
-    #                 pass
+    # add collision_detection
 
 
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1),
           random.randint(1, display_width - Enemy.width - 1))
-    for e in Enemy.objects:
-        for b in BlockOld.objects:
-            if (b.x < e.x < b.x + b.width or b.x < e.x + e.width < b.x + b.width) and (b.y < e.y < b.y + b.length or b.y < e.y + e.height < b.y + b.length):
-                Enemy.objects.remove(e)
-                smart_spawn()
+    # add block collision_detection
 
 
 def get_input():
@@ -221,6 +211,9 @@ def get_input():
         pygame.quit()
         sys.exit()
 
+
+def renew():
+    pass
 
 def game():
 
@@ -232,7 +225,7 @@ def game():
     # Init cooldown
     cooldown = 0
 
-    Block(300, 300, 200, 200)
+    # Block(300, 300, 200, 200)
 
     # Main loop
     smart_spawn()
@@ -250,8 +243,6 @@ def game():
         collision_detection()
         Bullet.renew()
         Bullet.display()
-        # BlockOld.display()
-        # player.display()
 
         # fire
         fire = False
@@ -316,7 +307,7 @@ def game():
 
         # Debug
         if DEBUG:
-            pygame.draw.line(game_display, BLACK, (player.x+Player.width/2, player.y +
+            pygame.draw.line(game_display, BLACK, (player.rect.x+Player.width/2, player.rect.y +
                                                    player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
             cooldown = 0
 
@@ -328,7 +319,7 @@ def game():
         if fire and cooldown < 100 and cooldown % 4 == 0:
 
             # bullet here
-            Bullet(player.x + player.width/2, player.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
+            Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
 
             #cooldown
             cooldown += 10
@@ -341,6 +332,8 @@ def game():
         # Cooldown bar
         sge_rect(display, 700, 790, 100, 10, WHITE)
         sge_rect(display, 700, 790, cooldown, 10, RED)
+
+        renew()
 
         GameObj.family.draw(display) # draw sprites
 
