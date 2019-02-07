@@ -52,12 +52,16 @@ class Block(GameObj):
 
     family = pygame.sprite.RenderUpdates()
 
-    def __init__(self, x, y, width, length):
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
         super().__init__()
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(BLACK)
-        self.rect.topleft = (x, y)
         self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
         self.family.add(self)
 
 
@@ -82,7 +86,6 @@ class Enemy:
 
     def ai():
         pass
-
 
 
 class Bullet:
@@ -142,16 +145,16 @@ class Player:
             self.x = display_width - Player.width
         if self.y + Player.height >= display_width:
             self.y = display_width - Player.height
-        for b in BlockOld.objects:
-            if (b.x < self.x < b.x + b.width or b.x < self.x + Player.width < b.x + b.width) and (b.y < self.y < b.y + b.length or b.y < self.y + Player.height < b.y + b.length):
-                if x > 0:
-                    self.x = b.x - Player.width
-                if x < 0:
-                    self.x = b.x + b.width
-                if y > 0:
-                    self.y = b.y - Player.height
-                if y < 0:
-                    self.y = b.y + b.length
+        # for b in BlockOld.objects:
+        #     if (b.x < self.x < b.x + b.width or b.x < self.x + Player.width < b.x + b.width) and (b.y < self.y < b.y + b.length or b.y < self.y + Player.height < b.y + b.length):
+        #         if x > 0:
+        #             self.x = b.x - Player.width
+        #         if x < 0:
+        #             self.x = b.x + b.width
+        #         if y > 0:
+        #             self.y = b.y - Player.height
+        #         if y < 0:
+        #             self.y = b.y + b.length
 
     def get_angle(self):
         get_angle_mouse_pos = pygame.mouse.get_pos()
@@ -187,19 +190,19 @@ class Player:
         return 0
 
 
-class BlockOld:
-    objects = []
-
-    def __init__(self, x, y, width, length):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.length = length
-        BlockOld.objects.append(self)
-
-    def display():
-        for i in BlockOld.objects:
-            pygame.draw.rect(display, BLACK, (i.x, i.y, i.width, i.length))
+# class BlockOld:
+#     objects = []
+#
+#     def __init__(self, x, y, width, length):
+#         self.x = x
+#         self.y = y
+#         self.width = width
+#         self.length = length
+#         BlockOld.objects.append(self)
+#
+#     def display():
+#         for i in BlockOld.objects:
+#             pygame.draw.rect(display, BLACK, (i.x, i.y, i.width, i.length))
 
 
 def collision_detection():
@@ -215,13 +218,13 @@ def collision_detection():
                     smart_spawn()
                 if int(clock.get_fps()) > 25:
                     smart_spawn()
-    for i in Bullet.objects:
-        for b in BlockOld.objects:
-            if (b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length)) or (b.x < i.x + i.vector_x < (b.x + b.width) and b.y < i.y + i.vector_y < (b.y + b.length)):
-                try:
-                    Bullet.objects.remove(i)
-                except ValueError:
-                    pass
+    # for i in Bullet.objects:
+    #     for b in BlockOld.objects:
+    #         if (b.x < i.x < (b.x + b.width) and b.y < i.y < (b.y + b.length)) or (b.x < i.x + i.vector_x < (b.x + b.width) and b.y < i.y + i.vector_y < (b.y + b.length)):
+    #             try:
+    #                 Bullet.objects.remove(i)
+    #             except ValueError:
+    #                 pass
 
 
 def smart_spawn():
@@ -249,8 +252,9 @@ def game():
 
     # Init cooldown
     cooldown = 0
-    BlockOld(100, 100, 600, 100)
-    BlockOld(100, 600, 600, 100)
+    # BlockOld(100, 100, 600, 100)
+    # BlockOld(100, 600, 600, 100)
+    Block(300, 300, 200, 200)
 
     # BlockOld(0, 0, 800, 10)
     # BlockOld(0, 0, 10, 800)
@@ -274,7 +278,7 @@ def game():
         collision_detection()
         Bullet.renew()
         Bullet.display()
-        BlockOld.display()
+        # BlockOld.display()
         player.display()
 
         # fire
