@@ -48,6 +48,16 @@ class GameObj(pygame.sprite.Sprite):
         GameObj.family.add(self)
 
 
+class Block(GameObj):
+
+    family = pygame.sprite.RenderUpdates()
+
+    def __init__(self, x, y, width, length):
+        super().__init__()
+        self.image = pygame.Surface((self.width, self.height))
+        self.rect.topleft = (x, y)
+
+
 class Enemy:
     objects = []
     width = 10
