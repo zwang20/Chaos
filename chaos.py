@@ -55,7 +55,10 @@ class Block(GameObj):
     def __init__(self, x, y, width, length):
         super().__init__()
         self.image = pygame.Surface((self.width, self.height))
+        self.image.fill(BLACK)
         self.rect.topleft = (x, y)
+        self.rect = self.image.get_rect()
+        self.family.add(self)
 
 
 class Enemy:
