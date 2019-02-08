@@ -140,6 +140,10 @@ class Bullet(GameObj):
         if pygame.sprite.spritecollide(self, Enemy.family, True):
             smart_spawn()
 
+        if pygame.sprite.spritecollide(self, Block.family, False):
+            self.kill()
+
+
 
 class Player(GameObj):
 
