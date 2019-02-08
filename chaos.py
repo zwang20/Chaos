@@ -439,7 +439,7 @@ def game():
         if not weapons[player.weapon]['ammo']:
             reload += 1
 
-        if reload == reload_time:
+        if reload >= reload_time:
             weapons[player.weapon]['ammo'] = max_ammo
             reload = 0
 
