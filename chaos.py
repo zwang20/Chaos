@@ -237,7 +237,7 @@ def game():
     # Init cooldown
     cooldown = 0
 
-    # Block(300, 300, 200, 200)
+    Block(100, 100, 10, 600)
 
     # Main loop
     smart_spawn()
