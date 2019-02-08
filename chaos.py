@@ -40,6 +40,8 @@ rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_rifle.png'))
 sniper_rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_sniper.png'))
 
 
+# load sounds
+pistol_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'M1911.ogg'))
 class GameObj(pygame.sprite.Sprite):
 
     family = pygame.sprite.RenderUpdates()
@@ -313,8 +315,8 @@ def game():
 
     # weapons
     weapons = {
-    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 , 'ammo' : 7 },
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 2 , 'reload_time': 180, 'ammo' : 20}
+    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
+    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 2 , 'reload_time': 180, 'ammo' : 20, 'sound': pistol_sound}
     }
 
     Block(100, 100, 10, 600)
@@ -427,6 +429,9 @@ def game():
 
             #cooldown
             cooldown += cooldown_time
+
+            # sound
+            pygame.mixer.Sound.play(pistol_sound)
 
             # ammo
             weapons[player.weapon]['ammo'] -= 1
