@@ -83,8 +83,43 @@ class Enemy(GameObj):
         self.rect.topleft = (self.x, self.y)
         Enemy.family.add(self)
 
-    def move():
-        pass
+    def move(self, x, y):
+
+        # left and right
+        self.rect.x += x
+
+        # Screen edge
+        if self.rect.x <= 0:
+            self.rect.x = 0
+        if self.rect.x + Enemy.width >= display_width:
+            self.rect.x = display_width - Enemy.width
+
+        # Did this update cause us to hit a wall?
+        for i in pygame.sprite.spritecollide(self, Block.family, False):
+            # If we are moving right, set our right side to the left side of
+            # the item we hit
+            if x > 0:
+                self.rect.right = i.rect.left
+            else:
+                # Otherwise if we are moving left, do the opposite.
+                self.rect.left = i.rect.right
+
+        # up and down
+        self.rect.y += y
+
+        # Screen edge
+        if self.rect.y <= 0:
+            self.rect.y = 0
+        if self.rect.y + Enemy.height >= display_width:
+            self.rect.y = display_width - Enemy.height
+
+        # Did this update cause us to hit a wall?
+        for i in pygame.sprite.spritecollide(self, Block.family, False):
+             # Reset our position based on the top/bottom of the object.
+            if y > 0:
+                self.rect.bottom = i.rect.top
+            else:
+                self.rect.top = i.rect.bottom
 
     def ai():
         pass
