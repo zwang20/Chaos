@@ -331,6 +331,7 @@ def game():
         sge_clear(display)  # Clear
         sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
+        sge_print(display, weapons[player.weapon]['name'], 50)
         # Enemy.display()
         # collision_detection()
 
