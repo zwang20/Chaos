@@ -317,7 +317,7 @@ def game():
     # weapons
     weapons = {
     0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 2 , 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
+    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 5 , 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
     }
 
     Block(100, 100, 10, 600)
@@ -414,6 +414,7 @@ def game():
             pygame.draw.line(game_display, BLACK, (player.rect.x+Player.width/2, player.rect.y +
                                                    player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
             cooldown = 0
+            weapons[player.weapon]['ammo'] = 1
 
 
         player.angle = Player.get_angle(player)
