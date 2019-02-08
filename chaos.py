@@ -411,6 +411,7 @@ def game():
         player.angle = Player.get_angle(player)
 
         cooldown_time = weapons[player.weapon]['cooldown_time']
+        max_ammo = weapons[player.weapon]['max_ammo']
 
         # Fire
         if fire and cooldown == 0:
