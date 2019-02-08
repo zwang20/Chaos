@@ -313,8 +313,8 @@ def game():
 
     # weapons
     weapons = {
-    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 },
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 2 , 'reload_time': 180}
+    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 , 'ammo' : 7 },
+    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 2 , 'reload_time': 180, 'ammo' : 20}
     }
 
     Block(100, 100, 10, 600)
@@ -325,13 +325,18 @@ def game():
     # bullet spread
     spread = 1
 
+    # ammo
+    reload = 0
+    max_ammo = weapons[player.weapon]['max_ammo']
+
     while True:
         # initilasion
         clock.tick(60)  # Frames per second
         sge_clear(display)  # Clear
-        sge_print(display, str(int(10*clock.get_fps())/10))  # Fps display
 
-        sge_print(display, weapons[player.weapon]['name'], 50) # gun name display
+        display_text = '  '.join([str(int(10*clock.get_fps())/10), str(weapons[player.weapon]['name']), ' '.join([str(weapons[player.weapon]['ammo']), '/', str(max_ammo)])])
+
+        sge_print(display, display_text) # display text
 
         # fire
         fire = False
@@ -412,9 +417,10 @@ def game():
 
         cooldown_time = weapons[player.weapon]['cooldown_time']
         max_ammo = weapons[player.weapon]['max_ammo']
+        reload_time = weapons[player.weapon]['reload_time']
 
         # Fire
-        if fire and cooldown == 0:
+        if fire and cooldown == 0 and weapons[player.weapon]['ammo']:
 
             # bullet here
             Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
@@ -422,10 +428,20 @@ def game():
             #cooldown
             cooldown += cooldown_time
 
+            # ammo
+            weapons[player.weapon]['ammo'] -= 1
 
         # Cooldown
         if cooldown > 0:
             cooldown -= 1
+
+        # reload
+        if not weapons[player.weapon]['ammo']:
+            reload += 1
+
+        if reload == reload_time:
+            weapons[player.weapon]['ammo'] = max_ammo
+            reload = 0
 
         update()
 
