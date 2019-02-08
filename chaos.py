@@ -197,6 +197,7 @@ class Player(GameObj):
     width = 10
     height = 10
     angle = 0
+    weapon = 0
 
     def __init__(self, x, y):
         super().__init__()
@@ -307,8 +308,14 @@ def game():
 
     player = Player(400, 400)
 
-    # Init cooldown
+    # cooldown
     cooldown = 0
+
+    # weapons
+    weapons = {
+    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 },
+    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 2 , 'reload_time': 180}
+    }
 
     Block(100, 100, 10, 600)
 
@@ -359,6 +366,13 @@ def game():
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:  # Down
             player.move(0, 3)
 
+        # change weapon
+        if keys[pygame.K_1]:
+            player.weapon = 0
+
+        if keys[pygame.K_2]:
+            player.weapon = 1
+
         # Pause
         if keys[pygame.K_p]:
             pause = True
@@ -397,28 +411,25 @@ def game():
 
         player.angle = Player.get_angle(player)
 
+        cooldown_time = weapons[player.weapon]['cooldown_time']
 
         # Fire
-        if fire and cooldown < 100 and cooldown % 4 == 0:
+        if fire and cooldown == 0:
 
             # bullet here
             Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
 
             #cooldown
-            cooldown += 10
+            cooldown += cooldown_time
 
 
         # Cooldown
         if cooldown > 0:
             cooldown -= 1
 
-        # Cooldown bar
-        sge_rect(display, 700, 790, 100, 10, WHITE)
-        sge_rect(display, 700, 790, cooldown, 10, RED)
-
         update()
 
-        print(GameObj.family.sprites())
+        # print(GameObj.family.sprites())
 
         GameObj.family.draw(display) # draw sprites
 
