@@ -121,8 +121,18 @@ class Enemy(GameObj):
             else:
                 self.rect.top = i.rect.bottom
 
-    def ai():
-        pass
+    def ai(self):
+        if self.rect.x > Player.family.sprite.rect.x:
+            self.move(-3, 0)
+        else:
+            self.move(3, 0)
+        if self.rect.y > Player.family.sprite.rect.y:
+            self.move(0, -3)
+        else:
+            self.move(0, 3)
+
+    def update(self):
+        self.ai()
 
 
 class Bullet(GameObj):
