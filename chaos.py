@@ -165,18 +165,42 @@ class Player(GameObj):
         Player.family.add(self)
 
     def move(self, x, y):
+
+        # left and right
         self.rect.x += x
-        self.rect.y += y
+
+        # Screen edge
         if self.rect.x <= 0:
             self.rect.x = 0
-        if self.rect.y <= 0:
-            self.rect.y = 0
         if self.rect.x + Player.width >= display_width:
             self.rect.x = display_width - Player.width
+
+        # Did this update cause us to hit a wall?
+        for i in pygame.sprite.spritecollide(self, Block.family, False):
+            # If we are moving right, set our right side to the left side of
+            # the item we hit
+            if x > 0:
+                self.rect.right = i.rect.left
+            else:
+                # Otherwise if we are moving left, do the opposite.
+                self.rect.left = i.rect.right
+
+        # up and down
+        self.rect.y += y
+
+        # Screen edge
+        if self.rect.y <= 0:
+            self.rect.y = 0
         if self.rect.y + Player.height >= display_width:
             self.rect.y = display_width - Player.height
 
-        # add collision_detection
+        # Did this update cause us to hit a wall?
+        for i in pygame.sprite.spritecollide(self, Block.family, False):
+             # Reset our position based on the top/bottom of the object.
+            if y > 0:
+                self.rect.bottom = i.rect.top
+            else:
+                self.rect.top = i.rect.bottom
 
     def get_angle(self):
         get_angle_mouse_pos = pygame.mouse.get_pos()
