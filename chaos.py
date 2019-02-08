@@ -63,6 +63,7 @@ class Block(GameObj):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
+        Block.family.add(self)
 
 
 class Enemy(GameObj):
@@ -80,6 +81,7 @@ class Enemy(GameObj):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
+        Enemy.family.add(self)
 
     def move():
         pass
@@ -108,6 +110,7 @@ class Bullet(GameObj):
         self.image = pygame.transform.rotate(self.image_ori, -self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+        Bullet.family.add(self)
 
     @property
     def x(self):
@@ -134,6 +137,9 @@ class Bullet(GameObj):
         else:
             self.kill()
 
+        if pygame.sprite.spritecollide(self, Enemy.family, True):
+            smart_spawn()
+
 
 class Player(GameObj):
 
@@ -152,7 +158,7 @@ class Player(GameObj):
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
-        self.family.add(self)
+        Player.family.add(self)
 
     def move(self, x, y):
         self.rect.x += x
