@@ -136,6 +136,8 @@ class Enemy(GameObj):
 
     def update(self):
         self.ai()
+        if pygame.sprite.spritecollide(self, Player.family, False):
+            print('You died')
 
 
 class Bullet(GameObj):
@@ -186,6 +188,7 @@ class Bullet(GameObj):
             self.kill()
 
         if pygame.sprite.spritecollide(self, Enemy.family, True):
+            smart_spawn()
             smart_spawn()
 
         if pygame.sprite.spritecollide(self, Block.family, False):
