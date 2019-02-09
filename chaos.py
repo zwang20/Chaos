@@ -43,6 +43,13 @@ sniper_rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_sniper.
 # load sounds
 pistol_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'M1911.ogg'))
 rifle_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'M16.ogg'))
+
+
+# sound channels
+CHANNELS = 20
+pygame.mixer.set_num_channels(CHANNELS)
+
+
 class GameObj(pygame.sprite.Sprite):
 
     family = pygame.sprite.RenderUpdates()
@@ -319,8 +326,8 @@ def game():
 
     # weapons
     weapons = {
-    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 5 , 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
+    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
+    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 10, 'burst': False, 'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
     }
 
     Block(100, 100, 10, 600)
@@ -334,6 +341,8 @@ def game():
     # ammo
     reload = 0
     max_ammo = weapons[player.weapon]['max_ammo']
+    burst = weapons[player.weapon]['burst']
+    channel = 0
 
     while True:
         # initilasion
@@ -425,18 +434,30 @@ def game():
         cooldown_time = weapons[player.weapon]['cooldown_time']
         max_ammo = weapons[player.weapon]['max_ammo']
         reload_time = weapons[player.weapon]['reload_time']
+        burst_time = weapons[player.weapon]['burst_time']
 
         # Fire
         if fire and cooldown == 0 and weapons[player.weapon]['ammo']:
 
+            # cooldown
+
+            if weapons[player.weapon]['burst']:
+                if burst == 0:
+                    cooldown += cooldown_time
+                    burst = weapons[player.weapon]['burst_count']
+                else:
+                    burst -= 1
+            else:
+                cooldown += cooldown_time
+
+
             # bullet here
             Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
 
-            #cooldown
-            cooldown += cooldown_time
 
             # sound
-            pygame.mixer.Sound.play(weapons[player.weapon]['sound'])
+            pygame.mixer.Channel(channel).play(weapons[player.weapon]['sound'])
+            channel += 1
 
             # ammo
             weapons[player.weapon]['ammo'] -= 1
@@ -458,6 +479,9 @@ def game():
         # print(GameObj.family.sprites())
 
         GameObj.family.draw(display) # draw sprites
+
+        if channel > CHANNELS - 1:
+            channel = 0
 
         pygame.display.update()  # update
         # This should be the last thing in the loop
