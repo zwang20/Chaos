@@ -43,6 +43,7 @@ sniper_rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_sniper.
 # load sounds
 pistol_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'M1911.ogg'))
 rifle_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'M16.ogg'))
+reload_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'Reload.ogg'))
 
 
 # sound channels
@@ -327,7 +328,7 @@ def game():
     # weapons
     weapons = {
     0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 10, 'burst': False, 'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
+    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 8, 'burst': False, 'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
     }
 
     Block(100, 100, 10, 600)
@@ -461,6 +462,12 @@ def game():
 
             # ammo
             weapons[player.weapon]['ammo'] -= 1
+            # reload sound
+            if channel > CHANNELS - 1:
+                channel = 0
+            if not weapons[player.weapon]['ammo']:
+                pygame.mixer.Channel(channel).play(reload_sound)
+                channel += 1
 
         # Cooldown
         if cooldown > 0:
