@@ -203,7 +203,6 @@ class Bullet(GameObj):
             self.kill()
 
 
-
 class Player(GameObj):
 
     family = pygame.sprite.GroupSingle() # only one sprite
@@ -212,6 +211,7 @@ class Player(GameObj):
     height = 10
     angle = 0
     weapon = 0
+    health = 100
 
     def __init__(self, x, y):
         super().__init__()
@@ -328,6 +328,8 @@ def game():
     }
 
     Block(100, 100, 10, 600)
+    Block(100, 100, 600, 10)
+    Block(100, 120, 500, 10)
 
     # Main loop
     smart_spawn()
