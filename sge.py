@@ -9,7 +9,7 @@ def sge_print(
         display=game_display, string='Test', x=0, y=0, colour=(0, 0, 0)):
     display.blit(
         pygame.font.SysFont(
-            "arial", 25).render(str(string), True, colour), (x, y))
+            "arial", 15).render(str(string), True, colour), (x, y))
 
 
 def sge_rect(
