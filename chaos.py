@@ -135,10 +135,14 @@ class Enemy(GameObj):
     def ai(self):
         if self.rect.x > Player.family.sprite.rect.x:
             self.move(-1, 0)
+        elif self.rect.x == Player.family.sprite.rect.x:
+            pass
         else:
             self.move(1, 0)
         if self.rect.y > Player.family.sprite.rect.y:
             self.move(0, -1)
+        elif self.rect.y == Player.family.sprite.rect.y:
+            pass
         else:
             self.move(0, 1)
 
