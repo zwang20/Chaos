@@ -133,6 +133,15 @@ class Enemy(GameObj):
                 self.rect.top = i.rect.bottom
 
     def ai(self):
+        if pygame.sprite.spritecollide(self, PathBlockEnemy.family, False):
+            for x in PathBlockEnemy.objects:
+                if pygame.sprite.collide_rect(self, x):
+                    for y in PathBlockPlayer.family:
+                        if x.id == y.id:
+                            if pygame.sprite.spritecollide(y, Player.family, False):
+                                self.move(x.move_x, x.move_y)
+                                return
+
         if self.rect.x > Player.family.sprite.rect.x:
             self.move(-1, 0)
         elif self.rect.x == Player.family.sprite.rect.x:
@@ -203,6 +212,7 @@ class Bullet(GameObj):
             smart_spawn()
             smart_spawn()
             Player.family.sprite.score += 1
+            self.kill()
 
         if pygame.sprite.spritecollide(self, Block.family, False):
             self.kill()
@@ -302,6 +312,44 @@ class Player(GameObj):
         return 0
 
 
+class PathBlockEnemy(pygame.sprite.Sprite):
+    objects = []
+
+    family = pygame.sprite.Group()
+
+    def __init__(self, x, y, width, height, move_x, move_y, id):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.move_x = move_x
+        self.move_y = move_y
+        self.image = pygame.Surface((self.width, self.height))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.x, self.y)
+        PathBlockEnemy.family.add(self)
+        self.id = id
+        PathBlockEnemy.objects.append(self)
+
+
+class PathBlockPlayer(pygame.sprite.Sprite):
+
+    family = pygame.sprite.Group()
+
+    def __init__(self, x, y, width, height, id):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.image = pygame.Surface((self.width, self.height))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.x, self.y)
+        PathBlockPlayer.family.add(self)
+        self.id = id
+
+
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1),
           random.randint(1, display_width - Enemy.width - 1))
@@ -315,12 +363,6 @@ def get_input():
 
 def update():
     GameObj.family.update()
-
-
-def load_map(map='map'):
-    file = open(str(map) + '.map', 'r')
-    for line in file:
-        eval(line)
 
 
 def game():
@@ -339,10 +381,10 @@ def game():
     1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 8, 'burst': False, 'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
     }
 
-    # Block(100, 100, 10, 600)
-    # Block(100, 100, 600, 10)
-    # Block(100, 120, 500, 10)
-    load_map()
+    file = open('map' + '.map', 'r')
+
+    for line in file:
+        eval(line) # This is extremely dangerous due to the ability to run code
 
     # Main loop
     smart_spawn()
