@@ -11,6 +11,6 @@ setup(
         'py2app': {'argv_emulation': True, 'packages': ['pygame']}
     },
 
-    data_files=['sge.py', 'Assets', 'map.map'],
+    data_files=['sge.py', 'Assets'],
     setup_requires=["py2app"],
 )
