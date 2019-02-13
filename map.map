@@ -1,3 +1,5 @@
 Block(100, 100, 10, 600)
 PathBlockEnemy(0, 100, 100, 600, 0, 1, 1)
 PathBlockPlayer(110, 100, 690, 600, 1)
+PathBlockEnemy(110, 100, 690, 600, 0, 1, 2)
+PathBlockPlayer(0, 100, 100, 600, 2)
