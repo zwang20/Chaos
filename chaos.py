@@ -145,7 +145,7 @@ class Enemy(GameObj):
     def update(self):
         self.ai()
         if pygame.sprite.spritecollide(self, Player.family, False):
-            print('You died')
+            Player.family.sprite.score -= 1
 
 
 class Bullet(GameObj):
@@ -198,6 +198,7 @@ class Bullet(GameObj):
         if pygame.sprite.spritecollide(self, Enemy.family, True):
             smart_spawn()
             smart_spawn()
+            Player.family.sprite.score += 1
 
         if pygame.sprite.spritecollide(self, Block.family, False):
             self.kill()
@@ -212,6 +213,7 @@ class Player(GameObj):
     angle = 0
     weapon = 0
     health = 100
+    score = 0
 
     def __init__(self, x, y):
         super().__init__()
@@ -348,7 +350,11 @@ def game():
         clock.tick(60)  # Frames per second
         sge_clear(display)  # Clear
 
-        display_text = '  '.join([str(int(10*clock.get_fps())/10), str(weapons[player.weapon]['name']), ' '.join([str(weapons[player.weapon]['ammo']), '/', str(max_ammo)])])
+        display_text = '  '.join([
+            str(int(10*clock.get_fps())/10),
+            str(weapons[player.weapon]['name']),
+            ' '.join([str(weapons[player.weapon]['ammo']), '/', str(max_ammo)]),
+            ' '.join(['Score:', str(player.score)])])
 
         sge_print(display, display_text) # display text
 
