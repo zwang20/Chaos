@@ -295,10 +295,10 @@ class Player(GameObj):
                 return 90
         return 0
 
+
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.height - 1),
           random.randint(1, display_width - Enemy.width - 1))
-
 
 
 def get_input():
