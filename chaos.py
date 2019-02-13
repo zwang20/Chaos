@@ -317,6 +317,12 @@ def update():
     GameObj.family.update()
 
 
+def load_map(map='map'):
+    file = open(str(map) + '.map', 'r')
+    for line in file:
+        eval(line)
+
+
 def game():
 
     # Debug
@@ -333,9 +339,10 @@ def game():
     1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 8, 'burst': False, 'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
     }
 
-    Block(100, 100, 10, 600)
-    Block(100, 100, 600, 10)
-    Block(100, 120, 500, 10)
+    # Block(100, 100, 10, 600)
+    # Block(100, 100, 600, 10)
+    # Block(100, 120, 500, 10)
+    load_map()
 
     # Main loop
     smart_spawn()
