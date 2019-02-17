@@ -119,8 +119,8 @@ class Enemy(GameObj):
         # Screen edge
         if self.rect.y <= 0:
             self.rect.y = 0
-        if self.rect.y + Enemy.height >= display_width:
-            self.rect.y = display_width - Enemy.height
+        if self.rect.y + Enemy.height >= display_height:
+            self.rect.y = display_height - Enemy.height
 
         # Did this update cause us to hit a wall?
         for i in pygame.sprite.spritecollide(self, Block.family, False):
@@ -265,8 +265,8 @@ class Player(GameObj):
         # Screen edge
         if self.rect.y <= 0:
             self.rect.y = 0
-        if self.rect.y + Player.height >= display_width:
-            self.rect.y = display_width - Player.height
+        if self.rect.y + Player.height >= display_height:
+            self.rect.y = display_height - Player.height
 
         # Did this update cause us to hit a wall?
         for i in pygame.sprite.spritecollide(self, Block.family, False):
@@ -349,8 +349,8 @@ class PathBlockPlayer(pygame.sprite.Sprite):
 
 
 def smart_spawn():
-    Enemy(random.randint(1, display_width - Enemy.height - 1),
-          random.randint(1, display_width - Enemy.width - 1))
+    Enemy(random.randint(1, display_width - Enemy.width - 1),
+          random.randint(1, display_height - Enemy.height - 1))
 
 
 def get_input():
@@ -404,8 +404,9 @@ def game():
 
     # weapons
     weapons = {
-    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
+    0: {'name': 'M1911',  'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
+    1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
+    2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound }
     }
 
     file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
@@ -476,6 +477,9 @@ def game():
 
         if keys[pygame.K_2]:
             player.weapon = 1
+
+        if keys[pygame.K_3]:
+            player.weapon = 2
 
         # Pause
         if keys[pygame.K_p]:
