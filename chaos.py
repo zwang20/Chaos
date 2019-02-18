@@ -482,7 +482,7 @@ def game():
             player.weapon = 2
 
         # Pause
-        if keys[pygame.K_p]:
+        if keys[pygame.K_p] or keys[pygame.K_ESCAPE]:
             pause = True
 
         # Pause
