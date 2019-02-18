@@ -413,7 +413,7 @@ def game():
 
     # safety
     SAFE_WORDS = ['Block']
-    UNSAFE_WORDS = ['quit', 'exit', 'open', '#']
+    UNSAFE_WORDS = ['quit', 'exit', 'open', '#', '"', "'"]
     for line in file.readlines():
         for word in SAFE_WORDS:
             if word not in line:
