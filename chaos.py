@@ -412,9 +412,15 @@ def game():
     file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
 
     # safety
+    SAFE_WORDS = ['Block']
+    UNSAFE_WORDS = ['quit', 'exit', 'open']
     for line in file.readlines():
-        if 'Block' not in line and 'PathBlock' not in line or 'quit' in line:
-            raise KeyboardInterrupt
+        for word in SAFE_WORDS:
+            if word not in line:
+                raise KeyboardInterrupt
+        for word in UNSAFE_WORDS:
+            if word in line:
+                raise KeyboardInterrupt
     exec(file.read())
 
     # for line in file:
