@@ -4,6 +4,7 @@ from sge import *
 import random
 import sys
 import math
+import time
 
 # init pygame
 pygame.init()
@@ -22,9 +23,9 @@ MAGENTA = (255, 0, 255); DARK_MAGENTA = (128, 0, 128)
 YELLOW = (255, 255, 0); DARK_YELLOW = (128, 128, 0)
 
 # creat window
-display_width = 800
+display_width = 1280
 display_height = 800
-display = pygame.display.set_mode([display_width, display_height])
+display = pygame.display.set_mode([display_width, display_height], pygame.NOFRAME)
 
 # set caption
 pygame.display.set_caption('Chaos')
@@ -44,7 +45,7 @@ rifle_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'M16.ogg'))
 reload_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'Reload.ogg'))
 
 # sound channels
-CHANNELS = 20
+CHANNELS = 100
 pygame.mixer.set_num_channels(CHANNELS)
 
 
@@ -118,8 +119,8 @@ class Enemy(GameObj):
         # Screen edge
         if self.rect.y <= 0:
             self.rect.y = 0
-        if self.rect.y + Enemy.height >= display_width:
-            self.rect.y = display_width - Enemy.height
+        if self.rect.y + Enemy.height >= display_height:
+            self.rect.y = display_height - Enemy.height
 
         # Did this update cause us to hit a wall?
         for i in pygame.sprite.spritecollide(self, Block.family, False):
@@ -264,8 +265,8 @@ class Player(GameObj):
         # Screen edge
         if self.rect.y <= 0:
             self.rect.y = 0
-        if self.rect.y + Player.height >= display_width:
-            self.rect.y = display_width - Player.height
+        if self.rect.y + Player.height >= display_height:
+            self.rect.y = display_height - Player.height
 
         # Did this update cause us to hit a wall?
         for i in pygame.sprite.spritecollide(self, Block.family, False):
@@ -348,8 +349,8 @@ class PathBlockPlayer(pygame.sprite.Sprite):
 
 
 def smart_spawn():
-    Enemy(random.randint(1, display_width - Enemy.height - 1),
-          random.randint(1, display_width - Enemy.width - 1))
+    Enemy(random.randint(1, display_width - Enemy.width - 1),
+          random.randint(1, display_height - Enemy.height - 1))
 
 
 def get_input():
@@ -366,16 +367,19 @@ def main_menu():
     while True:
         clock.tick(60)
         display.fill(WHITE)
-        display.blit(pygame.font.SysFont("arial", 100).render(str('Chaos'), True, BLACK), (250, 100))
+        text = pygame.font.SysFont("arial", 100).render(str('Chaos'), True, BLACK)
+        display.blit(text, (display_width/2 - text.get_width()/2, display_height/5 - text.get_height()/2))
 
         # play button
-        pygame.draw.rect(game_display, GREEN, (300, 400, 200, 100))
-        if 300 <= pygame.mouse.get_pos()[0] <= 500 and 400 <= pygame.mouse.get_pos()[1] <= 500:
-            pygame.draw.rect(game_display, DARK_GREEN, (300, 400, 200, 100))
+        play_button = pygame.Rect(0, 0, display_width/2, display_height/10)
+        play_button.center = (display_width/2, display_height/2)
+        pygame.draw.rect(game_display, GREEN, play_button)
+        if play_button.left <= pygame.mouse.get_pos()[0] <= play_button.right and play_button.top <= pygame.mouse.get_pos()[1] <= play_button.bottom:
+            pygame.draw.rect(game_display, DARK_GREEN, play_button)
             if pygame.mouse.get_pressed()[0]:
                 game()
         text = pygame.font.SysFont("arial", 30).render(str('Start Game'), True, BLACK)
-        display.blit(text, (400 - text.get_width() / 2, 450 - text.get_height() / 2))
+        display.blit(text, (play_button.centerx - text.get_width() / 2, play_button.centery - text.get_height() / 2))
 
         get_input()
         if pygame.event.peek(pygame.QUIT) or (pygame.key.get_pressed()[pygame.K_q] and (pygame.key.get_pressed()[pygame.K_LMETA] or pygame.key.get_pressed()[pygame.K_RMETA])):
@@ -393,21 +397,28 @@ def game():
     # Debug
     DEBUG = False
 
-    player = Player(400, 400)
+    player = Player(display_width/2, display_height/2)
 
     # cooldown
     cooldown = 0
 
     # weapons
     weapons = {
-    0: {'name': 'M1911', 'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  , 'max_ammo': 20, 'cooldown_time': 8, 'burst': False, 'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound }
+    0: {'name': 'M1911',  'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
+    1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
+    2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound }
     }
 
     file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
 
-    for line in file:
-        eval(line) # This is extremely dangerous due to the ability to run code
+    # safety
+    for line in file.readlines():
+        if 'Block' not in line and 'PathBlock' not in line or 'quit' in line:
+            raise KeyboardInterrupt
+    exec(file.read())
+
+    # for line in file:
+    #     eval(line) # This is extremely dangerous due to the ability to run code
 
     # Main loop
     smart_spawn()
@@ -473,8 +484,11 @@ def game():
         if keys[pygame.K_2]:
             player.weapon = 1
 
+        if keys[pygame.K_3]:
+            player.weapon = 2
+
         # Pause
-        if keys[pygame.K_p]:
+        if keys[pygame.K_p] or keys[pygame.K_ESCAPE]:
             pause = True
 
         # Pause
