@@ -411,6 +411,10 @@ def game():
 
     file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
 
+    # safety
+    for line in file.readlines():
+        if 'Block' not in line and 'PathBlock' not in line:
+            raise KeyboardInterrupt
     exec(file.read())
 
     # for line in file:
