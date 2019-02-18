@@ -411,8 +411,10 @@ def game():
 
     file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
 
-    for line in file:
-        eval(line) # This is extremely dangerous due to the ability to run code
+    exec(file.read())
+
+    # for line in file:
+    #     eval(line) # This is extremely dangerous due to the ability to run code
 
     # Main loop
     smart_spawn()
