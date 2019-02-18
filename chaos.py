@@ -413,7 +413,7 @@ def game():
 
     # safety
     for line in file.readlines():
-        if 'Block' not in line and 'PathBlock' not in line:
+        if 'Block' not in line and 'PathBlock' not in line or 'quit' in line:
             raise KeyboardInterrupt
     exec(file.read())
 
