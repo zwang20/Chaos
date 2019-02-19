@@ -2,6 +2,7 @@
 """Server for multithreaded (asynchronous) chat application."""
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+import ipaddress
 
 
 def accept_incoming_connections():
@@ -46,7 +47,7 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
 clients = {}
 addresses = {}
 
-HOST = '172.21.0.1'
+HOST = '' # ipaddress.ip_address('192.30.20.229') # '30:35:ad:aa:62:54'
 PORT = 33000
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
