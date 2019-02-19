@@ -12,7 +12,7 @@ def accept_incoming_connections():
         print("%s:%s has connected." % client_address)
         client.send(bytes("Greetings from the cave! Now type your name and press enter!", "utf8"))
         addresses[client] = client_address
-        Thread(target=handle_client, args=(client,)).start()
+        threading.Thread(target=handle_client, args=(client,)).start()
 
 
 def handle_client(client):  # Takes client socket.socket as argument.
