@@ -25,7 +25,7 @@ YELLOW = (255, 255, 0); DARK_YELLOW = (128, 128, 0)
 # creat window
 display_width = 1280
 display_height = 800
-display = pygame.display.set_mode([display_width, display_height], pygame.NOFRAME)
+display = pygame.display.set_mode([display_width, display_height],)
 
 # set caption
 pygame.display.set_caption('Chaos')
