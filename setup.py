@@ -6,7 +6,7 @@ Usage:
 """
 from setuptools import setup
 setup(
-    app=["chaos.py"],
+    app=["main.py"],
     options={
         'py2app': {'argv_emulation': True, 'packages': ['pygame']}
     },
