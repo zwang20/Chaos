@@ -36,9 +36,7 @@ game_display = display
 pygame.display.set_caption('Chaos')
 
 # set icon
-pygame.display.set_icon(
-    pygame.image.load(os.path.join('assets', '32x32_project_nont.png'))
-)
+pygame.display.set_icon(pygame.image.load(os.path.join('assets', '32x32_project_nont.png')))
 
 # Load images
 rifle_img = pygame.image.load(os.path.join('Assets', 'guns', 'gun_rifle.png'))
@@ -53,6 +51,7 @@ reload_sound = pygame.mixer.Sound(os.path.join('assets', 'sounds', 'Reload.ogg')
 CHANNELS = 100
 pygame.mixer.set_num_channels(CHANNELS)
 
+
 class GameObj(pygame.sprite.Sprite):
 
     family = pygame.sprite.RenderUpdates()
@@ -60,6 +59,7 @@ class GameObj(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         GameObj.family.add(self)
+
 
 class GameObj(pygame.sprite.Sprite):
 
@@ -321,6 +321,7 @@ class Player(GameObj):
                 return 90
         return 0
 
+
 class PathBlockEnemy(pygame.sprite.Sprite):
     objects = []
 
@@ -357,7 +358,8 @@ class PathBlockPlayer(pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
         PathBlockPlayer.family.add(self)
         self.id = id
-        
+
+
 def smart_spawn():
     Enemy(random.randint(1, display_width - Enemy.width - 1),
           random.randint(1, display_height - Enemy.height - 1))
@@ -631,5 +633,6 @@ def game():
 
         pygame.display.update()  # update
         # This should be the last thing in the loop
+
 
 main_menu()
