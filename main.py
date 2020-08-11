@@ -471,11 +471,18 @@ def game():
         display.fill(WHITE)
 
         display_text = '  '.join([
-            'FPS:',
-            str(int(10*clock.get_fps())/10),
+
+            # FPS
+            'FPS:', str(int(10*clock.get_fps())/10),
+
+            # Weapon
             str(weapons_old[player.weapon]['name']),
-            ' '.join([str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo)]),
-            ' '.join(['Score:', str(player.score)])
+
+            # Ammo
+            str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo),
+
+            # Score
+            'Score:', str(player.score)
         ])
 
 
