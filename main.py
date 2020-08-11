@@ -414,41 +414,55 @@ def game():
     # cooldown
     cooldown = 0
 
-    # weapons
-    weapons = {
+    # weapons_old
+    weapons_old = {
     0: {'name': 'M1911',  'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 2, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
+    1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 3, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
     2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound }
     }
 
-    file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
+    weapons = {
+        1: {
+            'name':             'M1911',
+            'clip_ammo':        7,
+            'automatic':        False,
+            'cooldown_time':    10,
+            'burst':            1,
+            'burst_time':       0,
+            'sound':            pistol_sound,
+        },
+    }
+
+    # deprecated
+    # file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
 
     # safety
-    SAFE_WORDS = ['Block']
-    UNSAFE_WORDS = ['quit', 'exit', 'open', '#', '"', "'"]
-    for line in file.readlines():
-        for word in SAFE_WORDS:
-            if word not in line:
-                raise KeyboardInterrupt
-        for word in UNSAFE_WORDS:
-            if word in line:
-                raise KeyboardInterrupt
-    exec(file.read())
+    # SAFE_WORDS = ['Block']
+    # UNSAFE_WORDS = ['quit', 'exit', 'open', '#', '"', "'"]
+    # for line in file.readlines():
+    #     for word in SAFE_WORDS:
+    #         if word not in line:
+    #             raise KeyboardInterrupt
+    #     for word in UNSAFE_WORDS:
+    #         if word in line:
+    #             raise KeyboardInterrupt
+    # exec(file.read())
 
     # for line in file:
     #     eval(line) # This is extremely dangerous due to the ability to run code
 
     # Main loop
-    smart_spawn()
+    # smart_spawn()
 
     # bullet spread
     spread = 1
 
     # ammo
     reload = 0
-    max_ammo = weapons[player.weapon]['max_ammo']
-    burst = weapons[player.weapon]['burst']
+    max_ammo = weapons_old[player.weapon]['max_ammo']
+    burst = weapons_old[player.weapon]['burst']
     channel = 0
+
 
     while True:
         # initilasion
@@ -457,10 +471,12 @@ def game():
         display.fill(WHITE)
 
         display_text = '  '.join([
+            'FPS:',
             str(int(10*clock.get_fps())/10),
-            str(weapons[player.weapon]['name']),
-            ' '.join([str(weapons[player.weapon]['ammo']), '/', str(max_ammo)]),
-            ' '.join(['Score:', str(player.score)])])
+            str(weapons_old[player.weapon]['name']),
+            ' '.join([str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo)]),
+            ' '.join(['Score:', str(player.score)])
+        ])
 
 
         # sge_print(display, display_text) # display text
@@ -568,25 +584,25 @@ def game():
             pygame.draw.line(game_display, BLACK, (player.rect.x+Player.width/2, player.rect.y +
                                                    player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
             cooldown = 0
-            weapons[player.weapon]['ammo'] = 1
+            weapons_old[player.weapon]['ammo'] = 1
 
 
         player.angle = Player.get_angle(player)
 
-        cooldown_time = weapons[player.weapon]['cooldown_time']
-        max_ammo = weapons[player.weapon]['max_ammo']
-        reload_time = weapons[player.weapon]['reload_time']
-        burst_time = weapons[player.weapon]['burst_time']
+        cooldown_time = weapons_old[player.weapon]['cooldown_time']
+        max_ammo = weapons_old[player.weapon]['max_ammo']
+        reload_time = weapons_old[player.weapon]['reload_time']
+        burst_time = weapons_old[player.weapon]['burst_time']
 
         # Fire
-        if fire and cooldown == 0 and weapons[player.weapon]['ammo']:
+        if fire and cooldown == 0 and weapons_old[player.weapon]['ammo']:
 
             # cooldown
 
-            if weapons[player.weapon]['burst']:
+            if weapons_old[player.weapon]['burst']:
                 if burst == 0:
                     cooldown += cooldown_time
-                    burst = weapons[player.weapon]['burst_count']
+                    burst = weapons_old[player.weapon]['burst_count']
                 else:
                     burst -= 1
             else:
@@ -598,15 +614,15 @@ def game():
 
 
             # sound
-            pygame.mixer.Channel(channel).play(weapons[player.weapon]['sound'])
+            pygame.mixer.Channel(channel).play(weapons_old[player.weapon]['sound'])
             channel += 1
 
             # ammo
-            weapons[player.weapon]['ammo'] -= 1
+            weapons_old[player.weapon]['ammo'] -= 1
             # reload sound
             if channel > CHANNELS - 1:
                 channel = 0
-            if not weapons[player.weapon]['ammo']:
+            if not weapons_old[player.weapon]['ammo']:
                 pygame.mixer.Channel(channel).play(reload_sound)
                 channel += 1
 
@@ -615,11 +631,11 @@ def game():
             cooldown -= 1
 
         # reload
-        if not weapons[player.weapon]['ammo']:
+        if not weapons_old[player.weapon]['ammo']:
             reload += 1
 
         if reload >= reload_time:
-            weapons[player.weapon]['ammo'] = max_ammo
+            weapons_old[player.weapon]['ammo'] = max_ammo
             reload = 0
 
         update()
