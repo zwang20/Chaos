@@ -338,7 +338,10 @@ class Player(GameObj):
         try:
             self._ammo[id] += amount
         except KeyError:
-            self._ammo[id] = amount
+            if amount < 0:
+                print(('Error: Gun Id {} ammo was set to {}').format(id, amount))
+            else:
+                self._ammo[id] = amount
 
     def get_clip_ammo(self, id):
         try:
@@ -461,6 +464,7 @@ def game():
             'cooldown_time':    10,
             'burst':            1,
             'burst_time':       0,
+            'reload_time':      60,
             'sound':            pistol_sound,
         },
         2: {
@@ -471,11 +475,13 @@ def game():
             'cooldown_time':    10,
             'burst':            3,
             'burst_time':       1,
+            'reload_time':      180,
             'sound':            rifle_sound,
         },
     }
 
     player.weapons[1] = weapons[1]
+    player.weapons[2] = weapons[2]
     # player_weapons = weapons
 
     # deprecated
@@ -511,6 +517,10 @@ def game():
     # max_ammo = weapons_old[player.weapon]['max_ammo']
     # burst = weapons_old[player.weapon]['burst']
     channel = 0
+    reloading = False
+    bursting = False
+    bursted = False
+    burst_count = 0
 
 
     while True:
@@ -529,7 +539,8 @@ def game():
             # str(weapons_old[player.weapon]['name']),
 
             # Ammo
-            str(player.weapons[player.weapon]["clip_ammo"]),
+            # str(player.weapons[player.weapon]["clip_ammo"]),
+            str(player.get_clip_ammo(player.weapon)),
             '/',
             str(player.get_ammo(player.weapon)),
             # str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo),
@@ -634,6 +645,9 @@ def game():
         if mouse[0] or keys[pygame.K_SPACE]:
             fire = True
 
+        if not (mouse[0] or keys[pygame.K_SPACE]):
+            bursted = False
+
         # mouse
         # sge_rect(display, mouse_pos[0]-8, mouse_pos[1]-1, 16, 2, RED)
         # sge_rect(display, mouse_pos[0]-1, mouse_pos[1]-8, 2, 16, RED)
@@ -657,6 +671,56 @@ def game():
         # reload_time = weapons_old[player.weapon]['reload_time']
         # burst_time = weapons_old[player.weapon]['burst_time']
 
+        #
+        # gun things
+        clip_ammo = player.get_clip_ammo(player.weapon)
+        burst = player.weapons[player.weapon]['burst']
+        automatic = player.weapons[player.weapon]['automatic']
+
+        # Fire
+
+        if fire:
+            if not cooldown:
+                if not bursted:
+                    if player.get_clip_ammo(player.weapon):
+
+
+                        # sound
+                        pygame.mixer.Channel(channel).play(player.weapons[player.weapon]['sound'])
+                        channel += 1
+
+                        # bullet here
+                        Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
+
+                        # increase cooldown
+                        cooldown += player.weapons[player.weapon]['cooldown_time']
+
+                        # decrease ammo
+                        player.change_clip_ammo(player.weapon, -1)
+
+                        # semi automatic
+                        if not player.weapons[player.weapon]['automatic']:
+                            bursted = True
+                            # print(1)
+
+        # cooldown
+        if cooldown:
+            cooldown -= 1
+
+        # TODO: fix this
+        if player.get_clip_ammo(player.weapon) == 0:
+            if player.get_ammo(player.weapon) > 0:
+                reloading = True
+
+        # reload
+        if reloading == True:
+            reload += 1
+
+        if reload >= player.weapons[player.weapon]['reload_time']:
+            reloading = False
+            player.change_clip_ammo(player.weapon, player.weapons[player.weapon]["clip_ammo"])
+            player.change_ammo(player.weapon, -player.weapons[player.weapon]["clip_ammo"])
+            reload = 0
         # Fire
         # if fire and cooldown == 0 and weapons_old[player.weapon]['ammo']:
         #
