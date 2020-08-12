@@ -241,6 +241,7 @@ class Player(GameObj):
     weapons = {}
     _ammo = {
         1:  100,
+        2:  100,
     }
     _clip_ammo = {
         1:  7,
@@ -462,7 +463,7 @@ def game():
             'clip_ammo':        7,
             'automatic':        False,
             'cooldown_time':    10,
-            'burst':            1,
+            'burst':            0,
             'burst_time':       0,
             'reload_time':      60,
             'sound':            pistol_sound,
@@ -473,8 +474,8 @@ def game():
             'clip_ammo':        20,
             'automatic':        False,
             'cooldown_time':    10,
-            'burst':            3,
-            'burst_time':       1,
+            'burst':            2,
+            'burst_time':       2,
             'reload_time':      180,
             'sound':            rifle_sound,
         },
@@ -521,6 +522,7 @@ def game():
     bursting = False
     bursted = False
     burst_count = 0
+    burst_cooldown = 0
 
 
     while True:
@@ -600,11 +602,11 @@ def game():
         if keys[pygame.K_2]:
             player.weapon = 2
 
-        if keys[pygame.K_3]:
-            player.weapon = 3
-
-        if keys[pygame.K_4]:
-            player.weapon = 4
+        # if keys[pygame.K_3]:
+        #     player.weapon = 3
+        #
+        # if keys[pygame.K_4]:
+        #     player.weapon = 4
 
         # Pause
         if keys[pygame.K_p] or keys[pygame.K_ESCAPE]:
@@ -678,11 +680,22 @@ def game():
         automatic = player.weapons[player.weapon]['automatic']
 
         # Fire
-
+        # print(burst_cooldown)
         if fire:
-            if not cooldown:
-                if not bursted:
-                    if player.get_clip_ammo(player.weapon):
+            if not bursted:
+                if player.get_clip_ammo(player.weapon):
+                    if (not cooldown) or (not burst_cooldown):
+
+                        if not cooldown:
+                            # increase cooldown
+                            cooldown += player.weapons[player.weapon]['cooldown_time']
+
+                        if burst:
+                            # print(1)
+                            if not burst_cooldown:
+                                # print(2)
+                                burst_cooldown += player.weapons[player.weapon]['burst_time']
+
 
 
                         # sound
@@ -692,20 +705,26 @@ def game():
                         # bullet here
                         Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
 
-                        # increase cooldown
-                        cooldown += player.weapons[player.weapon]['cooldown_time']
 
                         # decrease ammo
                         player.change_clip_ammo(player.weapon, -1)
 
                         # semi automatic
                         if not player.weapons[player.weapon]['automatic']:
-                            bursted = True
+                            if burst_count >= burst:
+                                bursted = True
+                                burst_count = 0
+                                bursting = False
+                            else:
+                                burst_count += 1
+                                bursting = True
                             # print(1)
 
         # cooldown
-        if cooldown:
+        if cooldown > 0:
             cooldown -= 1
+        if burst_cooldown > 0:
+            burst_cooldown -= 1
 
         # TODO: fix this
         if player.get_clip_ammo(player.weapon) == 0:
@@ -723,49 +742,6 @@ def game():
             reload = 0
             pygame.mixer.Channel(channel).play(reload_sound)
             channel += 1
-        # Fire
-        # if fire and cooldown == 0 and weapons_old[player.weapon]['ammo']:
-        #
-        #     # cooldown
-        #
-        #     if weapons_old[player.weapon]['burst']:
-        #         if burst == 0:
-        #             cooldown += cooldown_time
-        #             burst = weapons_old[player.weapon]['burst_count']
-        #         else:
-        #             burst -= 1
-        #     else:
-        #         cooldown += cooldown_time
-        #
-        #
-        #     # bullet here
-        #     Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
-        #
-        #
-        #     # sound
-        #     pygame.mixer.Channel(channel).play(weapons_old[player.weapon]['sound'])
-        #     channel += 1
-        #
-        #     # ammo
-        #     weapons_old[player.weapon]['ammo'] -= 1
-        #     # reload sound
-        #     if channel > CHANNELS - 1:
-        #         channel = 0
-        #     if not weapons_old[player.weapon]['ammo']:
-        #         pygame.mixer.Channel(channel).play(reload_sound)
-        #         channel += 1
-
-        # Cooldown
-        # if cooldown > 0:
-        #     cooldown -= 1
-        #
-        # # reload
-        # if not weapons_old[player.weapon]['ammo']:
-        #     reload += 1
-        #
-        # if reload >= reload_time:
-        #     weapons_old[player.weapon]['ammo'] = max_ammo
-        #     reload = 0
 
         update()
 
