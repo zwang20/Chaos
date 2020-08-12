@@ -235,9 +235,16 @@ class Player(GameObj):
     width = 10
     height = 10
     angle = 0
-    weapon = 0
+    weapon = 1
     health = 100
     score = 0
+    weapons = {}
+    _ammo = {
+        1:  100,
+    }
+    _clip_ammo = {
+        1:  7,
+    }
 
     def __init__(self, x, y):
         super().__init__()
@@ -321,6 +328,29 @@ class Player(GameObj):
                 return 90
         return 0
 
+    def get_ammo(self, id):
+        try:
+            return self._ammo[id]
+        except KeyError:
+            return 0
+
+    def change_ammo(self, id, amount):
+        try:
+            self._ammo[id] += amount
+        except KeyError:
+            self._ammo[id] = amount
+
+    def get_clip_ammo(self, id):
+        try:
+            return self._clip_ammo[id]
+        except KeyError:
+            return 0
+
+    def change_clip_ammo(self, id, amount):
+        try:
+            self._clip_ammo[id] += amount
+        except KeyError:
+            self._clip_ammo[id] = amount
 
 class PathBlockEnemy(pygame.sprite.Sprite):
     objects = []
@@ -415,15 +445,16 @@ def game():
     cooldown = 0
 
     # weapons_old
-    weapons_old = {
-    0: {'name': 'M1911',  'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
-    1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 3, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
-    2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound },
-    3: {'name': 'Test 2', 'max_ammo': 99, 'cooldown_time': 1,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 0,   'ammo' : 50, 'sound': rifle_sound },
-    }
+    # weapons_old = {
+    # 0: {'name': 'M1911',  'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
+    # 1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 3, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
+    # 2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound },
+    # 3: {'name': 'Test 2', 'max_ammo': 99, 'cooldown_time': 1,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 0,   'ammo' : 50, 'sound': rifle_sound },
+    # }
 
     weapons = {
         1: {
+            'id':               1,
             'name':             'M1911',
             'clip_ammo':        7,
             'automatic':        False,
@@ -432,7 +463,20 @@ def game():
             'burst_time':       0,
             'sound':            pistol_sound,
         },
+        2: {
+            'id':               2,
+            'name':             'M16A4',
+            'clip_ammo':        20,
+            'automatic':        False,
+            'cooldown_time':    10,
+            'burst':            3,
+            'burst_time':       1,
+            'sound':            rifle_sound,
+        },
     }
+
+    player.weapons[1] = weapons[1]
+    # player_weapons = weapons
 
     # deprecated
     # file = open(os.path.join('Assets', 'maps', 'map.map'), 'r')
@@ -460,8 +504,12 @@ def game():
 
     # ammo
     reload = 0
-    max_ammo = weapons_old[player.weapon]['max_ammo']
-    burst = weapons_old[player.weapon]['burst']
+    clip_ammo = player.weapons[1]['clip_ammo']
+    burst = player.weapons[1]['burst']
+    automatic = player.weapons[1]['automatic']
+    # ammo = player.get_ammo(player.weapon)
+    # max_ammo = weapons_old[player.weapon]['max_ammo']
+    # burst = weapons_old[player.weapon]['burst']
     channel = 0
 
 
@@ -477,10 +525,14 @@ def game():
             'FPS:', str(int(10*clock.get_fps())/10),
 
             # Weapon
-            str(weapons_old[player.weapon]['name']),
+            str(player.weapons[player.weapon]['name']),
+            # str(weapons_old[player.weapon]['name']),
 
             # Ammo
-            str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo),
+            str(player.weapons[player.weapon]["clip_ammo"]),
+            '/',
+            str(player.get_ammo(player.weapon)),
+            # str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo),
 
             # Score
             'Score:', str(player.score)
@@ -532,16 +584,16 @@ def game():
 
         # change weapon
         if keys[pygame.K_1]:
-            player.weapon = 0
-
-        if keys[pygame.K_2]:
             player.weapon = 1
 
-        if keys[pygame.K_3]:
+        if keys[pygame.K_2]:
             player.weapon = 2
 
-        if keys[pygame.K_4]:
+        if keys[pygame.K_3]:
             player.weapon = 3
+
+        if keys[pygame.K_4]:
+            player.weapon = 4
 
         # Pause
         if keys[pygame.K_p] or keys[pygame.K_ESCAPE]:
@@ -591,63 +643,63 @@ def game():
         temp_spread_y = random.uniform(-spread, spread)
 
         # Debug
-        if DEBUG:
-            pygame.draw.line(game_display, BLACK, (player.rect.x+Player.width/2, player.rect.y +
-                                                   player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
-            cooldown = 0
-            weapons_old[player.weapon]['ammo'] = 1
+        # if DEBUG:
+        #     pygame.draw.line(game_display, BLACK, (player.rect.x+Player.width/2, player.rect.y +
+        #                                            player.height/2), (mouse_pos[0]+temp_spread_x, mouse_pos[1]+temp_spread_y), 2)
+        #     cooldown = 0
+        #     weapons_old[player.weapon]['ammo'] = 1
 
 
         player.angle = Player.get_angle(player)
 
-        cooldown_time = weapons_old[player.weapon]['cooldown_time']
-        max_ammo = weapons_old[player.weapon]['max_ammo']
-        reload_time = weapons_old[player.weapon]['reload_time']
-        burst_time = weapons_old[player.weapon]['burst_time']
+        # cooldown_time = weapons_old[player.weapon]['cooldown_time']
+        # max_ammo = weapons_old[player.weapon]['max_ammo']
+        # reload_time = weapons_old[player.weapon]['reload_time']
+        # burst_time = weapons_old[player.weapon]['burst_time']
 
         # Fire
-        if fire and cooldown == 0 and weapons_old[player.weapon]['ammo']:
-
-            # cooldown
-
-            if weapons_old[player.weapon]['burst']:
-                if burst == 0:
-                    cooldown += cooldown_time
-                    burst = weapons_old[player.weapon]['burst_count']
-                else:
-                    burst -= 1
-            else:
-                cooldown += cooldown_time
-
-
-            # bullet here
-            Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
-
-
-            # sound
-            pygame.mixer.Channel(channel).play(weapons_old[player.weapon]['sound'])
-            channel += 1
-
-            # ammo
-            weapons_old[player.weapon]['ammo'] -= 1
-            # reload sound
-            if channel > CHANNELS - 1:
-                channel = 0
-            if not weapons_old[player.weapon]['ammo']:
-                pygame.mixer.Channel(channel).play(reload_sound)
-                channel += 1
+        # if fire and cooldown == 0 and weapons_old[player.weapon]['ammo']:
+        #
+        #     # cooldown
+        #
+        #     if weapons_old[player.weapon]['burst']:
+        #         if burst == 0:
+        #             cooldown += cooldown_time
+        #             burst = weapons_old[player.weapon]['burst_count']
+        #         else:
+        #             burst -= 1
+        #     else:
+        #         cooldown += cooldown_time
+        #
+        #
+        #     # bullet here
+        #     Bullet(player.rect.x + player.width/2, player.rect.y + player.height/2, player.angle + random.randint(-spread, spread), 20)
+        #
+        #
+        #     # sound
+        #     pygame.mixer.Channel(channel).play(weapons_old[player.weapon]['sound'])
+        #     channel += 1
+        #
+        #     # ammo
+        #     weapons_old[player.weapon]['ammo'] -= 1
+        #     # reload sound
+        #     if channel > CHANNELS - 1:
+        #         channel = 0
+        #     if not weapons_old[player.weapon]['ammo']:
+        #         pygame.mixer.Channel(channel).play(reload_sound)
+        #         channel += 1
 
         # Cooldown
-        if cooldown > 0:
-            cooldown -= 1
-
-        # reload
-        if not weapons_old[player.weapon]['ammo']:
-            reload += 1
-
-        if reload >= reload_time:
-            weapons_old[player.weapon]['ammo'] = max_ammo
-            reload = 0
+        # if cooldown > 0:
+        #     cooldown -= 1
+        #
+        # # reload
+        # if not weapons_old[player.weapon]['ammo']:
+        #     reload += 1
+        #
+        # if reload >= reload_time:
+        #     weapons_old[player.weapon]['ammo'] = max_ammo
+        #     reload = 0
 
         update()
 
