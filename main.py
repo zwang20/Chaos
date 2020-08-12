@@ -721,6 +721,8 @@ def game():
             player.change_clip_ammo(player.weapon, player.weapons[player.weapon]["clip_ammo"])
             player.change_ammo(player.weapon, -player.weapons[player.weapon]["clip_ammo"])
             reload = 0
+            pygame.mixer.Channel(channel).play(reload_sound)
+            channel += 1
         # Fire
         # if fire and cooldown == 0 and weapons_old[player.weapon]['ammo']:
         #
