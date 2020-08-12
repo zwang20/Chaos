@@ -418,7 +418,8 @@ def game():
     weapons_old = {
     0: {'name': 'M1911',  'max_ammo': 7,  'cooldown_time': 10, 'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 60 , 'ammo' : 7 , 'sound': pistol_sound},
     1: {'name': 'M16'  ,  'max_ammo': 20, 'cooldown_time': 8,  'burst': True,  'burst_count': 3, 'burst_time': 2, 'reload_time': 180, 'ammo' : 20, 'sound': rifle_sound },
-    2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound }
+    2: {'name': 'Test 1', 'max_ammo': 50, 'cooldown_time': 5,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 180, 'ammo' : 50, 'sound': rifle_sound },
+    3: {'name': 'Test 2', 'max_ammo': 99, 'cooldown_time': 1,  'burst': False, 'burst_count': 1, 'burst_time': 0, 'reload_time': 0,   'ammo' : 50, 'sound': rifle_sound },
     }
 
     weapons = {
@@ -538,6 +539,9 @@ def game():
 
         if keys[pygame.K_3]:
             player.weapon = 2
+
+        if keys[pygame.K_4]:
+            player.weapon = 3
 
         # Pause
         if keys[pygame.K_p] or keys[pygame.K_ESCAPE]:
