@@ -168,7 +168,7 @@ class Enemy(GameObj):
     def update(self):
         self.ai()
         if pygame.sprite.spritecollide(self, Player.family, False):
-            Player.family.sprite.score -= 1
+            Player.family.sprite.health -= 1
 
 
 class Bullet(GameObj):
@@ -548,7 +548,10 @@ def game():
             # str(weapons_old[player.weapon]['ammo']), '/', str(max_ammo),
 
             # Score
-            'Score:', str(player.score)
+            'Score:', str(player.score),
+
+            # Health
+            'Health:', str(player.health),
         ])
 
 
