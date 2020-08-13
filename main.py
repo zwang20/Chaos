@@ -497,10 +497,22 @@ def game():
             'reload_time':      180,
             'sound':            rifle_sound,
         },
+        3: {
+            'id':               3,
+            'name':             'T1',
+            'clip_ammo':        1000000000000000000000,
+            'automatic':        True,
+            'cooldown_time':    10,
+            'burst':            0,
+            'burst_time':       2,
+            'reload_time':      180,
+            'sound':            rifle_sound,
+        },
     }
 
     player.weapons[1] = weapons[1]
     player.weapons[2] = weapons[2]
+    player.weapons[3] = weapons[3]
     # player_weapons = weapons
 
     # deprecated
@@ -586,6 +598,7 @@ def game():
 
         # fire
         fire = False
+        # fire = True
 
         # pause
         pause = False
@@ -623,8 +636,8 @@ def game():
         if keys[pygame.K_2]:
             player.weapon = 2
 
-        # if keys[pygame.K_3]:
-        #     player.weapon = 3
+        if keys[pygame.K_3]:
+            player.weapon = 3
         #
         # if keys[pygame.K_4]:
         #     player.weapon = 4
