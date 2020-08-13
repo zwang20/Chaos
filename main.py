@@ -504,7 +504,7 @@ def game():
     #     eval(line) # This is extremely dangerous due to the ability to run code
 
     # Main loop
-    # smart_spawn()
+    smart_spawn()
 
     # bullet spread
     spread = 1
