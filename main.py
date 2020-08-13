@@ -143,6 +143,7 @@ class Enemy(GameObj):
                 self.rect.top = i.rect.bottom
 
     def ai(self):
+        _collide = False
         if pygame.sprite.spritecollide(self, PathBlockEnemy.family, False):
             for x in PathBlockEnemy.objects:
                 if pygame.sprite.collide_rect(self, x):
@@ -152,18 +153,31 @@ class Enemy(GameObj):
                                 self.move(x.move_x, x.move_y)
                                 return
 
-        if self.rect.x > Player.family.sprite.rect.x:
-            self.move(-1, 0)
-        elif self.rect.x == Player.family.sprite.rect.x:
-            pass
-        else:
-            self.move(1, 0)
-        if self.rect.y > Player.family.sprite.rect.y:
-            self.move(0, -1)
-        elif self.rect.y == Player.family.sprite.rect.y:
-            pass
-        else:
-            self.move(0, 1)
+        pass
+        for i in Enemy.family:
+            if i is not self:
+                if not _collide:
+                    # print(self.x, i.x)
+                    if abs(i.rect.x - self.rect.x)+abs(i.rect.y - self.rect.y) <= 20:
+                        if abs(i.rect.x - self.rect.x) <= 10:
+                            self.move(math.copysign(1, self.rect.x - i.rect.x), 0)
+                        if abs(i.rect.y - self.rect.y) <= 10:
+                            self.move(0, math.copysign(1, self.rect.y - i.rect.y))
+                        _collide = True
+
+        if not _collide:
+            if self.rect.x > Player.family.sprite.rect.x:
+                self.move(-1, 0)
+            elif self.rect.x == Player.family.sprite.rect.x:
+                pass
+            else:
+                self.move(1, 0)
+            if self.rect.y > Player.family.sprite.rect.y:
+                self.move(0, -1)
+            elif self.rect.y == Player.family.sprite.rect.y:
+                pass
+            else:
+                self.move(0, 1)
 
     def update(self):
         self.ai()
@@ -392,6 +406,10 @@ class PathBlockPlayer(pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
         PathBlockPlayer.family.add(self)
         self.id = id
+
+
+class PathBlock(GameObj):
+    pass
 
 
 def smart_spawn():
